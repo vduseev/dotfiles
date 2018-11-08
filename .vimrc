@@ -70,49 +70,75 @@ nnoremap <S-H> <C-W><C-H>
 "============================================================================
 
 " set the runtime path to include Vundle and initialize
+" alternatively, pass a path where Vundle should install plugins
+" call vundle#begin('~/some/path/here')
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
-
 " add all your plugins here (note older versions of Vundle
 " used Bundle instead of Plugin)
-Plugin 'vim-scripts/indentpython.vim'
-" Heavy and smart completion engine
-Plugin 'Valloric/YouCompleteMe'
-" Vim syntax veryfication engine, relies on backends
-Plugin 'vim-syntastic/syntastic'
-" Python syntax veryfication backend
-Plugin 'nvie/vim-flake8'
-" Status bar
-Plugin 'vim-airline/vim-airline'
-" 
-Plugin 'mhinz/vim-startify'
+
+"=== Status line
+
+python from powerline.vim import setup as powerline_setup
+python powerline_setup()
+python del powerline_setup
+
+"=== Directory tree
+
 " Directory and file tree <leader>d
 Plugin 'scrooloose/nerdtree'
-Plugin 'kien/ctrlp.vim'
-" Monokai color scheme for VIM
-Plugin 'crusoexia/vim-monokai'
-" Plugin 'morhetz/gruvbox'
-" Plugin 'jnurmine/Zenburn'
+
+"=== Miscellaneous 
+
 " Commenter helper count<leader>cc [comment]
 " and count<leader>cu [uncomment]
 Plugin 'scrooloose/nerdcommenter'
-" Extensive python syntax support for better highlighting
-Plugin 'kh3phr3n/python-syntax'
+
+" Quick search plugin
+Plugin 'kien/ctrlp.vim'
+ 
+" Starting screen with recent files nad cowsay
+Plugin 'mhinz/vim-startify'
+
+" Indent guides (helping lines)
+" <Leader>ig
+Plugin 'nathanaelkane/vim-indent-guides'
+
+"=== Syntax support
+
+" Heavy and smart completion engine
+Plugin 'Valloric/YouCompleteMe'
+
+" Vim syntax veryfication engine, relies on backends
+Plugin 'vim-syntastic/syntastic'
+
 " PLantUML syntax support
 Plugin 'aklt/plantuml-syntax'
+
 " Support for Liquid and Jekyll syntax
 Plugin 'tpope/vim-liquid'
+
 " Small plugin to highlight YAML frontmatter in Markdown files
 Plugin 'PProvost/vim-markdown-jekyll'
-" Indent guides (helping lines)
-" Usage: <Leader>ig
-Plugin 'nathanaelkane/vim-indent-guides'
+
+"=== Python
+
+" Python indentation
+Plugin 'vim-scripts/indentpython.vim'
+
+" Python syntax veryfication backend
+Plugin 'nvie/vim-flake8'
+
+" Extensive python syntax support for better highlighting
+Plugin 'kh3phr3n/python-syntax'
+
+"=== Color schemas
+
+" Monokai color scheme for VIM
+Plugin 'crusoexia/vim-monokai'
 
 "============================================================================
 "=                          PLUGIN CUSTOMIZATION                            =
@@ -126,6 +152,9 @@ set background=light
 " let g:gruvbox_italic = 1
 let g:monokai_term_italic = 1
 let g:monokai_gui_italic = 1
+
+"********************** POWERLINE *************************
+set laststatus=2
 
 "*********************** AIRLINE **************************
 " Airline customization
@@ -145,6 +174,7 @@ map <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 map <leader>d :NERDTreeToggle<CR>
 " Show hidden files
 let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.o$', '\~$', '\.swp$']
 
 "*********************** PlantUML *************************
 " PlanUML Syntax plugin customization
