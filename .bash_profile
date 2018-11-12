@@ -35,6 +35,7 @@ __BASH_PROMT_ROW_2="${NC}└─${__BASH_PROMT_SYMBOL} "
 ## Definition of the whole promt
 #export PS1="${__BASH_PROMT_ROW_1}\n${__BASH_PROMT_ROW_2}"
 
+# Source powerline
 . /usr/local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
 
 # Use colors.
