@@ -1,3 +1,4 @@
+
 # Git status function
 gs() {
   git status "$@"
@@ -15,7 +16,7 @@ gc() {
 
 # Git push function
 push() {
-  git push "$@
+  git push "$@"
 }
 
 # Git pull function

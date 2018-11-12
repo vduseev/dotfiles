@@ -54,6 +54,12 @@ then
   source ~/.bash_aliases
 fi
 
+# Include function file (if present)
+if [ -f ~/.bash_functions ]
+then
+  source ~/.bash_functions
+fi
+
 # Include bashrc file (if present).
 if [ -f ~/.bashrc ]
 then
