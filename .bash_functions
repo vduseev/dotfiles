@@ -67,3 +67,34 @@ function denter() {
 # Docker image visualization (usage: `dockviz images -t`).
 alias dockviz="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz"
 
+# Delete a given line number in the known_hosts file.
+knownrm() {
+  re='^[0-9]+$'
+  if ! [[ $1 =~ $re ]] ; then
+    echo "error: line number missing" >&2;
+  else
+    sed -i '' "$1d" ~/.ssh/known_hosts
+  fi
+}
+
+# Ask for confirmation when 'prod' is in a command string.
+prod_command_trap () {
+  if [[ $BASH_COMMAND == *prod* ]]
+  then
+    read -p "Are you sure you want to run this command on prod [Y/n]? " -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      echo -e "\nRunning command \"$BASH_COMMAND\" \n"
+    else
+      echo -e "\nCommand was not run.\n"
+      return 1
+    fi
+  fi
+}
+
+# Syntax-highlight code for copying and pasting.
+# Requires highlight (`brew install highlight`).
+function pretty() {
+  pbpaste | highlight --syntax=$1 -O rtf | pbcopy
+}
+

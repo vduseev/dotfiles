@@ -35,7 +35,7 @@ __BASH_PROMT_ROW_2="${NC}└─${__BASH_PROMT_SYMBOL} "
 ## Definition of the whole promt
 #export PS1="${__BASH_PROMT_ROW_1}\n${__BASH_PROMT_ROW_2}"
 
-# Source powerline
+# Initialize powerline
 source /usr/local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
 
 # Use colors.
@@ -70,12 +70,6 @@ then
   source ~/.bashrc
 fi
 
-# Syntax-highlight code for copying and pasting.
-# Requires highlight (`brew install highlight`).
-function pretty() {
-  pbpaste | highlight --syntax=$1 -O rtf | pbcopy
-}
-
 # Tell homebrew to not autoupdate every single time I run it (just once a week).
 export HOMEBREW_AUTO_UPDATE_SECS=604800
 
@@ -106,31 +100,6 @@ fi
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
-
-# Delete a given line number in the known_hosts file.
-knownrm() {
-  re='^[0-9]+$'
-  if ! [[ $1 =~ $re ]] ; then
-    echo "error: line number missing" >&2;
-  else
-    sed -i '' "$1d" ~/.ssh/known_hosts
-  fi
-}
-
-# Ask for confirmation when 'prod' is in a command string.
-prod_command_trap () {
-  if [[ $BASH_COMMAND == *prod* ]]
-  then
-    read -p "Are you sure you want to run this command on prod [Y/n]? " -n 1 -r
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-      echo -e "\nRunning command \"$BASH_COMMAND\" \n"
-    else
-      echo -e "\nCommand was not run.\n"
-      return 1
-    fi
-  fi
-}
 
 shopt -s extdebug
 trap prod_command_trap DEBUG
