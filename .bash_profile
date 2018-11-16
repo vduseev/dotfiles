@@ -36,7 +36,7 @@ __BASH_PROMT_ROW_2="${NC}└─${__BASH_PROMT_SYMBOL} "
 #export PS1="${__BASH_PROMT_ROW_1}\n${__BASH_PROMT_ROW_2}"
 
 # Source powerline
-. /usr/local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
+source /usr/local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
 
 # Use colors.
 export CLICOLOR=1
@@ -44,6 +44,10 @@ export LSCOLORS=ExFxCxDxBxegedabagacad
 
 # Custom $PATH with extra locations.
 export PATH=/usr/local/bin:/usr/local/sbin:$HOME/bin:/usr/local/git/bin:$HOME/.composer/vendor/bin:$PATH
+
+# PyEnv locations
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
 
 # Add Java interpreter
 export PATH="$HOME/.jvenv/versions/1.8.0_161/bin:$PATH"
@@ -114,16 +118,20 @@ if [ -x "$(command -v kubectl)" ]; then
 fi
 
 # Use nvm.
-# export NVM_DIR="$HOME/.nvm"
-# . "$brew_prefix/opt/nvm/nvm.sh"
+export NVM_DIR="$HOME/.nvm"
+if [ -f "$brew_prefix/opt/nvm/nvm.sh" ]; then
+  source "$brew_prefix/opt/nvm/nvm.sh"
+fi
 
 # Use rbenv.
 if [ -f /usr/local/bin/rbenv ]; then
   eval "$(rbenv init -)"
 fi
 
-# Python settings.
-export PYTHONPATH="/usr/local/lib/python2.7/site-packages"
+# Initialize pyenv
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
 
 # Super useful Docker container oneshots.
 # Usage: dockrun, or dockrun [centos7|fedora27|debian9|debian8|ubuntu1404|etc.]
@@ -169,6 +177,7 @@ prod_command_trap () {
     fi
   fi
 }
+
 shopt -s extdebug
 trap prod_command_trap DEBUG
 
