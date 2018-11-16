@@ -47,3 +47,23 @@ function gsync() {
   git push origin "$1"
 }
 
+# Super useful Docker container oneshots.
+# Usage: dockrun, or dockrun [centos7|fedora27|debian9|debian8|ubuntu1404|etc.]
+dockrun() {
+  docker run -it geerlingguy/docker-"${1:-ubuntu1604}"-ansible /bin/bash
+}
+
+# Enter a running Docker container.
+function denter() {
+  if [[ ! "$1" ]] ; then
+      echo "You must supply a container ID or name."
+      return 0
+  fi
+
+  docker exec -it $1 bash
+  return 0
+}
+
+# Docker image visualization (usage: `dockviz images -t`).
+alias dockviz="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz"
+
