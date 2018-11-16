@@ -174,7 +174,7 @@ map <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 map <leader>d :NERDTreeToggle<CR>
 " Show hidden files
 let NERDTreeShowHidden=1
-let NERDTreeIgnore=['\.o$', '\~$', '\.swp$', '\.git$']
+let NERDTreeIgnore=['\.o$', '\~$', '\.swp$', '\.git$', '\.pyc$']
 
 "*********************** PlantUML *************************
 " PlanUML Syntax plugin customization
