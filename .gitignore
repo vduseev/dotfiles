@@ -2,3 +2,5 @@
 *.LSOverride
 Thumbs.db
 .bundle
+*.swp
+*.pyc
