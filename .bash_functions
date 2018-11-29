@@ -14,6 +14,11 @@ gc() {
   git commit "$@"
 }
 
+# Git diff function
+gd() {
+  git diff "$@"
+}
+
 # Git push function
 push() {
   git push "$@"
