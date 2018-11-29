@@ -1,1 +1,1 @@
-alias l="ls -lha"
+alias ll="ls -lha"
