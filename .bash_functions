@@ -14,6 +14,11 @@ gc() {
   git commit "$@"
 }
 
+# Git commit with message function
+gcm() {
+  git commit -m "$@"
+}
+
 # Git diff function
 gd() {
   git diff "$@"
