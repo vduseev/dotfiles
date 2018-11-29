@@ -101,6 +101,6 @@ if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
 
-shopt -s extdebug
-trap prod_command_trap DEBUG
+#shopt -s extdebug
+#trap prod_command_trap DEBUG
 
