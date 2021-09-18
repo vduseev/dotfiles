@@ -1,9 +1,2 @@
-# Ignore the following
-*.DS_Store
-*.LSOverride
-Thumbs.db
-.bundle
-*.swp
-*.pyc
-.aws
-
+# Tmux
+.tmux/resurrect
