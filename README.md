@@ -1,5 +1,7 @@
 # dotfiles
 
+![Demo Screenshot](https://raw.githubusercontent.com/vduseev/dotfiles/docs/demo.jpg)
+
 [![Supported Platform](https://img.shields.io/badge/platform-macos_linux-blue.svg)](https://shields.io/)
 
 Personal collection of "dotfiles".
