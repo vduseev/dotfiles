@@ -1,4 +1,4 @@
-# Zsh Configuration
+# Starship Configuration
 # https://github.com/vduseev/dotfiles
 #
 # Copyright: 2017- Vagiz Duseev (@vduseev)
@@ -15,10 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# See Starship docs:
+# Styles: https://starship.rs/advanced-config/#style-strings
+
 [aws]
 format = 'on [$symbol($profile )(\($region\) )]($style)'
-style = "bold blue"
-symbol = "🅰 "
+style = "bold yellow"
+symbol = " "
 
 [gcloud]
 disabled = true
