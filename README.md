@@ -1,10 +1,10 @@
 # dotfiles
 
-![Demo Screenshot](https://raw.githubusercontent.com/vduseev/dotfiles/docs/demo.jpg)
-
-[![Supported Platform](https://img.shields.io/badge/platform-macos_linux-blue.svg)](https://shields.io/)
-
 Personal collection of "dotfiles" (configuration files that usually reside in your home directory).
+
+![Demo Terminal](https://raw.githubusercontent.com/vduseev/dotfiles/docs/dotfiles-demo.gif)
+
+[![Supported Platform](https://img.shields.io/badge/platform-macos_|_linux-blue.svg)](https://shields.io/)
 
 <a id="requirements"></a>
 
