@@ -65,6 +65,9 @@ Personal collection of "dotfiles" (configuration files that usually reside in yo
 
 ### Command line
 
+This navigation is based on Emacs and is common for all terminals and computers in general.
+This is not a part of this config and is placed here just so you know.
+
 | Shortcut | Action |
 | - | - |
 | <kbd>Ctrl + a</kbd> | Move to the start of the command line |
@@ -79,6 +82,7 @@ Personal collection of "dotfiles" (configuration files that usually reside in yo
 ### Navigate buffers
 
 This navigation shortcuts work in `Vim`, in `man` pages, while reading output of `less` or `more` commands, etc.
+This is not a part of this config as well and is placed here for you interest.
 
 | Shortcut | Action |
 | - | - |
