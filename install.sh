@@ -28,16 +28,26 @@ install_item() {
   read -p "${COUNTER}) Would you like to create symlink for ${__item} (y/N)? " __answer
 
   if [[ "$__answer" == "y" ]]; then
-    echo "Creating symlink to '${SCRIPT_DIR}/${__item}' from '~/${__item}' ..."
+    echo "Creating symlink to '${SCRIPT_DIR}/${__item}' from '${HOME}/${__item}' ..."
 
-    if ! ln -s "${SCRIPT_DIR}/${__item}" ~/"${__item}"; then
+    # Check if symlink contains a directory
+    if [[ "${__item%/*}" != "$__item" ]]; then
+      local __dir="${__item%/*}"
+      # Create directory if it does not exit
+      if [[ ! -d "${HOME}/${__dir}" ]]; then
+        echo "Directory '${HOME}/${__dir}' does not exist. Creating it ..."
+        mkdir -p "${HOME}/${__dir}"
+      fi
+    fi
+
+    if ! ln -s "${SCRIPT_DIR}/${__item}" "${HOME}/${__item}"; then
       echo ""
       read -p "Try to force create (ln -sf) the symlink and overwrite your existing file (y/N)? " __answer
 
       if [[ "$__answer" == "y" ]]; then
         echo "Force creating symlink ..."
 
-        if ! ln -sf "${SCRIPT_DIR}/${__item}" ~/"${__item}"; then
+        if ! ln -sf "${SCRIPT_DIR}/${__item}" "${HOME}/${__item}"; then
           echo "Error: Could not create symlink ${__item}!"
         else
           echo "Symlink ${__item} has been created successfully"
@@ -67,7 +77,8 @@ main() {
   install_item ".vimrc"
   install_item ".tmux.conf"
   install_item ".tmux"
-  install_item ".alacritty.yml"
+  install_item ".config/alacritty/alacritty.yml"
+  install_item ".config/alacritty/alacritty.base.yml"
   install_item ".config/starship.toml"
 
   echo "Finished creating symlinks!"
