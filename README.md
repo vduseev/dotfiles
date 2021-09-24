@@ -61,12 +61,26 @@ Personal collection of "dotfiles" (configuration files that usually reside in yo
    $ ln -s ~/.dotfiles/.vimrc
    ```
 
+3. Make changes and keep this configuration as a basis.
+
+   Configs for alacritty, bash, zsh, tmux are capable of loading user defined config files
+   with settings that will compliment or overwrite settings implemented in this repository
+   without having to fork it.
+
+   Put your own settings into the following files and they will be automatically loaded
+   and will overwrite settings implemented in this repository.
+
+   * Alacritty: `~/.config/alacritty/alacritty.local.yml`
+   * Tmux: `~/.tmux.local`
+   * Bash: `~/.bashrc.local`
+   * Zsh: `~/.zshrc.local`
+
 ## Usage
 
 ### Command line
 
 This navigation is based on Emacs and is common for all terminals and computers in general.
-This is not a part of this config and is placed here just so you know.
+This is not a part of this config and is placed here for information.
 
 | Shortcut | Action |
 | - | - |
@@ -75,14 +89,14 @@ This is not a part of this config and is placed here just so you know.
 | <kbd>Ctrl + u</kbd> | Delete everything to the left of cursor position |
 | <kbd>Alt/Option + f</kbd> | Move one word forward |
 | <kbd>Alt/Option + b</kbd> | Move one word backwards |
-| <kbd>Ctrl + l</kbd> | Clear current terminal of all text |
+| <kbd>Ctrl + l</kbd> | Clean current terminal window of all text |
 
 <a id="navigate"></a>
 
 ### Navigate buffers
 
 This navigation shortcuts work in `Vim`, in `man` pages, while reading output of `less` or `more` commands, etc.
-This is not a part of this config as well and is placed here for you interest.
+This is not a part of this config as well and is placed here for information.
 
 | Shortcut | Action |
 | - | - |
@@ -99,6 +113,16 @@ This is not a part of this config as well and is placed here for you interest.
 | <kbd>}</kbd> | Jump down to next empty line |
 
 ### Tmux
+
+Tmux is a terminal multiplexer. It allows you to run multiple virtual terminal windows inside a single actual terminal.
+Tmux starts a process that runs in the background and then attaches to it.
+Thanks to this, you can close your terminal or detach from a session and it will continue to run in the background
+unless you turn off your computer.
+
+Main benefits of `tmux` are that you only need one actual terminal window open and that it can run sessions in the background.
+However, you also navigate between virtual terminals faster and you can create preconfigured sessions for your projects
+using tools like `tmuxinator` or use [`tmux-continuum`](https://github.com/tmux-plugins/tmux-continuum) to restore
+all your terminals to last saved state after you restart tmux or computer.
 
 * Start new noname session: `tmux`
 * Start new session with a name (e.g. home): `tmux new -s home`
@@ -135,6 +159,21 @@ This is not a part of this config as well and is placed here for you interest.
 | prefix, <kbd>I</kbd>                    | Install new plugins                                               |
 | prefix, <kbd>U</kbd>                    | Update plugins                                                    |
 | prefix, <kbd>Alt + u</kbd>              | Remove/uninstall plugins not on the plugin list                   |
+
+### Aliases
+
+The Zsh config comes with some aliases, to which you can add your own by creating or changing the `~/.zshrc.local` file.
+
+| Alias | Command |
+| - | - |
+| `ll` | `ls -lha` |
+| `k` | `kubectl` |
+| `d` | `docker` |
+| `dc` | `docker compose` |
+| `g` | `git` |
+| `gpft` | `git push --follow-tags` |
+| `tf` | `terraform` |
+| `mux` | `tmuxinator` |
 
 ## MacOS
 
