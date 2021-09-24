@@ -100,9 +100,14 @@ alias d="docker"
 alias dc="docker compose"
 
 alias g="git"
-alias gr="git remote"
-alias gpf="git push --follow-tags"
+alias gpft="git push --follow-tags"
 
 alias tf="terraform"
 
 alias mux="tmuxinator"
+
+# --- Load user supplied config -----------------------------------------------
+
+if [[ -f "$HOME/.zshrc.local" ]]; then
+    source "$HOME/.zshrc.local"
+fi
