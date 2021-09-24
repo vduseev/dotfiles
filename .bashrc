@@ -92,12 +92,12 @@ LIGHT_CYAN="\[\e[1;36m\]"
 NC="\[\e[0m\]" # no color
 
 ## Definition of promt segments
-__BASH_PROMT_LOGO="\[\]" 
+__BASH_PROMT_LOGO="\[\]"
 __BASH_PROMT_DATETIME="${LIGHT_GREEN}\t (\d)"
 __BASH_PROMT_GIT="${LIGHT_CYAN}\$(git branch 2>/dev/null | sed -n 's/* \(.*\)/\1 /p')"
 __BASH_PROMT_USER_LOCATION="${YELLOW}\u ${RED}on ${LIGHT_BLUE}\h ${RED}at ${LIGHT_GRAY}\w"
 __BASH_PROMT_SYMBOL="$"
-  
+
 ## Definition of rows
 __BASH_PROMT_ROW_1="${NC}┌─${__BASH_PROMT_DATETIME} ${__BASH_PROMT_USER_LOCATION} ${__BASH_PROMT_GIT}"
 __BASH_PROMT_ROW_2="${NC}└─${__BASH_PROMT_SYMBOL} "
@@ -114,3 +114,7 @@ export KUBECONFIG=$HOME/.kube/config
 export PATH="$HOME/.poetry/bin:$PATH"
 export PATH="/usr/local/go/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
+
+if [ -f ~/.bashrc.local ]; then
+  source ~/.bashrc.local
+fi
