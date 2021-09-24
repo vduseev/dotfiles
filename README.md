@@ -227,10 +227,10 @@ This section describes how to install all the <a href="#requirements">requiremen
   brew install alacritty
   ```
 
-* Remap <kbd>CapsLock</kbd> key to <kbd>Ctrl</kbd> in Settings
+* Remap <kbd>Caps Lock</kbd> key to <kbd>Ctrl</kbd> in Settings
 
   Because many shortcuts in this config use <kbd>Ctrl</kbd> for navigation in the terminal
-  it is very useful to change the meaning of the <kbd>CapsLock</kbd> key to instead work
+  it is very useful to change the meaning of the <kbd>Caps Lock</kbd> key to instead work
   like <kbd>Ctrl</kbd>.
 
   In that case you don't have to look for the <kbd>Ctrl</kbd> with your left pinky each time
