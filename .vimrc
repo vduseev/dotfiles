@@ -111,7 +111,7 @@ au BufNewFile,BufRead *.html,*.css,*.json
   \ set fileformat=unix
 
 " Bash indentation
-au BufNewFile,BufRead *.sh,.vimrc,.bash_profile,.bashrc,.nix
+au BufNewFile,BufRead *.sh,.vimrc,.bash_profile,.bashrc,.nix,.zshrc
   \ set softtabstop=2 |
   \ set shiftwidth=2 |
   \ set expandtab |
