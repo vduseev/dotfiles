@@ -87,6 +87,7 @@ This is not a part of this config and is placed here for information.
 | <kbd>Ctrl + a</kbd> | Move to the start of the command line |
 | <kbd>Ctrl + e</kbd> | Move to the end of the command line |
 | <kbd>Ctrl + u</kbd> | Delete everything to the left of cursor position |
+| <kbd>Ctrl + w</kbd> | Delete one word to the left |
 | <kbd>Alt/Option + f</kbd> | Move one word forward |
 | <kbd>Alt/Option + b</kbd> | Move one word backwards |
 | <kbd>Ctrl + l</kbd> | Clean current terminal window of all text |
