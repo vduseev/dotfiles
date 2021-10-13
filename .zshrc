@@ -28,6 +28,9 @@ fi
 export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 export EDITOR=vim
 
+# Add Homebrew path on MacOS
+export PATH="/opt/homebrew/bin:${PATH}"
+
 # --- Individual history for each terminal window -----------------------------
 
 # Use arrows to scroll local history
@@ -105,6 +108,8 @@ alias gpft="git push --follow-tags"
 alias tf="terraform"
 
 alias mux="tmuxinator"
+
+alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 # --- Load user supplied config -----------------------------------------------
 
