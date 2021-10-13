@@ -44,7 +44,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    family: Lekton Nerd Font Mono
+    family: Hack Nerd Font Mono
 
     # The `style` can be specified to pick a specific face.
     style: Regular
@@ -55,7 +55,7 @@ font:
     #
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: Lekton Nerd Font Mono
+    family: Hack Nerd Font Mono
 
     # The `style` can be specified to pick a specific face.
     style: Bold
@@ -66,7 +66,7 @@ font:
     #
     # If the italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: Lekton Nerd Font Mono
+    family: Hack Nerd Font Mono
 
     # The `style` can be specified to pick a specific face.
     style: Italic
@@ -77,13 +77,13 @@ font:
     #
     # If the bold italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: Lekton Nerd Font Mono
+    family: Hack Nerd Font Mono
 
     # The `style` can be specified to pick a specific face.
     style: Bold Italic
 
   # Point size
-  size: 18.0
+  size: 16.0
 
 key_bindings:
 - { key: F,  mods: Alt,           chars: "\x1bf"                       }
