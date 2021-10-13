@@ -11,6 +11,7 @@ export LSCOLORS=ExFxCxDxBxegedabagacad
 export PATH=/bin:/sbin
 export PATH=/usr/bin:/usr/sbin:$PATH
 export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=/opt/homebrew/bin:$PATH
 
 # Include alias file (if present) containing aliases for ssh, etc.
 if [ -f ~/.bash_aliases ]
