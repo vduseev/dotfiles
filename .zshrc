@@ -93,6 +93,11 @@ if [[ -d "$HOME/.edgedb/bin" ]]; then
     export PATH="$HOME/.edgedb/bin:$PATH"
 fi
 
+# RUst
+if [[ -d "$HOME/.cargo/bin" ]]; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+fi
+
 # --- Aliases -----------------------------------------------------------------
 
 alias ll="ls -lha"
