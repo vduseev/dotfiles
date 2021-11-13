@@ -108,6 +108,9 @@ alias d="docker"
 alias dc="docker compose"
 
 alias g="git"
+alias gs="git status"
+alias ga="git add"
+alias gc="git commit -m"
 alias gpft="git push --follow-tags"
 
 alias tf="terraform"
