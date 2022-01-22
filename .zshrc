@@ -28,6 +28,11 @@ fi
 export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 export EDITOR=vim
 
+# Force emacs mode
+# See: https://unix.stackexchange.com/questions/197839/why-does-exporting-vim-as-editor-in-zsh-disable-keyboard-shortcuts
+bindkey -e
+set -o emacs
+
 # Add Homebrew path on MacOS
 export PATH="/opt/homebrew/bin:${PATH}"
 
