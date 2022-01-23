@@ -28,6 +28,12 @@ fi
 export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 export EDITOR=vim
 
+# Language for compatibility with Mosh
+# See: https://github.com/mobile-shell/mosh/issues/793#issuecomment-368755189
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
 # Force emacs mode
 # See: https://unix.stackexchange.com/questions/197839/why-does-exporting-vim-as-editor-in-zsh-disable-keyboard-shortcuts
 bindkey -e
