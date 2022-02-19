@@ -75,7 +75,7 @@ if which starship &> /dev/null; then
 fi
 
 # Flutter
-if [[ -d "$HOME/.flutter" ]]; then
+if [[ -d "$HOME/.flutter/bin" ]]; then
     export PATH="$HOME/.flutter/bin:$PATH"
 fi
 
@@ -93,10 +93,8 @@ if which rbenv &> /dev/null; then
 fi
 
 # Java
-if [[ -d "$HOME/.jenv/versions/openjdk1.8.0_242_x64" ]]; then
-    export JAVA_HOME="$HOME/.jenv/versions/openjdk1.8.0_242_x64/"
-    # export PATH="$HOME/.jenv/bin:$PATH"
-    # eval "$(jenv init -)"
+if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
+    export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 fi
 
 # EdgeDB
@@ -104,30 +102,54 @@ if [[ -d "$HOME/.edgedb/bin" ]]; then
     export PATH="$HOME/.edgedb/bin:$PATH"
 fi
 
-# RUst
+# Rust
 if [[ -d "$HOME/.cargo/bin" ]]; then
     export PATH="$HOME/.cargo/bin:$PATH"
 fi
 
+# --- Functions ---------------------------------------------------------------
+
+listeners() {
+    if [[ $# -ne 1 ]]; then
+        echo "Error: port number is required for listeners command"
+        exit 1
+    fi
+    local __port="$1"
+    if which sw_vers &> /dev/null; then
+        # If MacOS X
+        lsof -nP -iTCP -sTCP:LISTEN | grep "$__port"
+    elif which netstat &> /dev/null; then
+        # Linux
+        netstat -plunt "$__port"
+    else
+        echo "Error: cannot find correct executable to find port listeners"
+    fi
+}
+
 # --- Aliases -----------------------------------------------------------------
 
+# Directory navigation
 alias ll="ls -lha"
 
-alias k="kubectl"
-
+# Docker and kumernetes
 alias d="docker"
 alias dc="docker compose"
+alias k="kubectl"
 
+# Git
 alias g="git"
 alias gs="git status"
 alias ga="git add"
 alias gc="git commit -m"
 alias gpft="git push --follow-tags"
 
+# Infrastructure as code
 alias tf="terraform"
 
+# Terminal
 alias mux="tmuxinator"
 
+# Connections
 alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 # --- Load user supplied config -----------------------------------------------
