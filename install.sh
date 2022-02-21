@@ -76,7 +76,6 @@ main() {
   install_item ".zshrc"
   install_item ".vimrc"
   install_item ".tmux.conf"
-  install_item ".tmux"
   install_item ".config/alacritty/alacritty.yml"
   install_item ".config/alacritty/alacritty.base.yml"
   install_item ".config/starship.toml"
