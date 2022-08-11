@@ -131,7 +131,7 @@ listeners() {
 # Directory navigation
 alias ll="ls -lha"
 
-# Docker and kumernetes
+# Docker and kubernetes
 alias d="docker"
 alias dc="docker compose"
 alias k="kubectl"
