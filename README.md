@@ -198,10 +198,10 @@ This section describes how to install all the <a href="#requirements">requiremen
   * [Hack](https://www.programmingfonts.org/#hack)
   * [Noto](https://www.programmingfonts.org/#noto)
 
-  To install `lekton` font, for example, execute the command above like this:
+  To install `hack` font, for example, execute the command above like this:
 
   ```shell
-  brew install --cask font-lekton-nerd-font
+  brew install --cask font-hack-nerd-font
   ```
 
 * Install Starship
