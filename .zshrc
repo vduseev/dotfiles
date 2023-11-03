@@ -74,11 +74,6 @@ if which starship &> /dev/null; then
     eval "$(starship init zsh)"
 fi
 
-# Flutter
-if [[ -d "$HOME/.flutter/bin" ]]; then
-    export PATH="$HOME/.flutter/bin:$PATH"
-fi
-
 # Pyenv
 if which pyenv &> /dev/null; then
     export PYENV_ROOT="$HOME/.pyenv"
@@ -92,11 +87,6 @@ if which rbenv &> /dev/null; then
     eval "$(rbenv init -)"
 fi
 
-# Java
-if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
-    export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-fi
-
 # EdgeDB
 if [[ -d "$HOME/.edgedb/bin" ]]; then
     export PATH="$HOME/.edgedb/bin:$PATH"
@@ -105,6 +95,12 @@ fi
 # Rust
 if [[ -d "$HOME/.cargo/bin" ]]; then
     export PATH="$HOME/.cargo/bin:$PATH"
+fi
+
+# Nvm
+if [[ -d "/opt/homebrew/opt/nvm" ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
 fi
 
 # --- Functions ---------------------------------------------------------------
@@ -157,3 +153,10 @@ alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 if [[ -f "$HOME/.zshrc.local" ]]; then
     source "$HOME/.zshrc.local"
 fi
+
+
+## [Completion] 
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/vduseev/.dart-cli-completion/zsh-config.zsh ]] && . /Users/vduseev/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
