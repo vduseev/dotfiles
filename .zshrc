@@ -154,9 +154,3 @@ if [[ -f "$HOME/.zshrc.local" ]]; then
     source "$HOME/.zshrc.local"
 fi
 
-
-## [Completion] 
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/vduseev/.dart-cli-completion/zsh-config.zsh ]] && . /Users/vduseev/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
-
