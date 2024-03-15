@@ -18,6 +18,8 @@
 # See Starship docs:
 # Styles: https://starship.rs/advanced-config/#style-strings
 
+command_timeout = 5000
+
 [aws]
 format = 'on [$symbol($profile )(\($region\) )]($style)'
 style = "bold yellow"

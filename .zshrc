@@ -67,8 +67,6 @@ ZSH_THEME="robbyrussell"
 
 # --- Plugins -----------------------------------------------------------------
 
-plugins=(git)
-
 # Starship
 if which starship &> /dev/null; then
     eval "$(starship init zsh)"
@@ -78,18 +76,14 @@ fi
 if which pyenv &> /dev/null; then
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init --path)"
+    # eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
+    export ZSH_PYENV_VIRTUALENV=false
 fi
 
 # Ruby
 if which rbenv &> /dev/null; then
     eval "$(rbenv init -)"
-fi
-
-# EdgeDB
-if [[ -d "$HOME/.edgedb/bin" ]]; then
-    export PATH="$HOME/.edgedb/bin:$PATH"
 fi
 
 # Rust
@@ -100,8 +94,10 @@ fi
 # Nvm
 if [[ -d "/opt/homebrew/opt/nvm" ]]; then
     export NVM_DIR="$HOME/.nvm"
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
 fi
+
+plugins=(git pyenv macos nmap starship tmux)
 
 # --- Functions ---------------------------------------------------------------
 
@@ -126,24 +122,6 @@ listeners() {
 
 # Directory navigation
 alias ll="ls -lha"
-
-# Docker and kubernetes
-alias d="docker"
-alias dc="docker compose"
-alias k="kubectl"
-
-# Git
-alias g="git"
-alias gs="git status"
-alias ga="git add"
-alias gc="git commit -m"
-alias gpft="git push --follow-tags"
-
-# Infrastructure as code
-alias tf="terraform"
-
-# Terminal
-alias mux="tmuxinator"
 
 # Connections
 alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
