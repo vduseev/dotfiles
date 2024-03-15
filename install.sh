@@ -25,24 +25,25 @@ ensure_target_does_not_exist() {
 
   # Variables
   local __answer="n"
+  local __short_target="${__target/"${HOME}"/~}"
 
   if [[ ! -e "${__target}" ]]; then
     return 0
   fi
 
   echo ""
-  echo "Can't proceed. File or directory already exists at ${__target}."
+  echo "Can't proceed. File or directory already exists at ${__short_target}."
 
   read -p "Would you like to rename it (r), delete it (d), or skip (N)? (r/d/N) " __answer
   if [[ "$__answer" == "r" ]]; then
     mv "${__target}" "${__target}.bckp" 
-    echo "Renamed ${__target} to ${__target}.bckp successfully."
+    echo "Renamed ${__short_target} to ${__short_target}.bckp successfully."
     return 0
   fi
 
   if [[ "$__answer" == "d" ]]; then
     rm -rf "${__target}"
-    echo "Removed existing ${__target} successfully."
+    echo "Removed existing ${__short_target} successfully."
     return 0
   fi
 
@@ -56,13 +57,14 @@ create_symlink() {
 
   # Variables
   local __answer="n"
-  local __target_exists="n"
+  local __short_source="${__source/"${HOME}"/~}"
+  local __short_target="${__target/"${HOME}"/~}"
 
-  echo "Creating a symlink at '${__target}' pointing to '${__source}' ..."
+  echo "Creating a symlink at '${__short_target}' pointing to '${__short_source}' ..."
 
   # Check that target does not already exists
   if ! ensure_target_does_not_exist "${__target}"; then
-    echo "Skipping ${__target} symlink because the file already exists."
+    echo "Skipping ${__short_target} symlink because the file already exists."
     return
   fi
 
@@ -77,24 +79,24 @@ create_symlink() {
   fi
 
   if ln -s "$__source" "$__target"; then
-    echo "Symlink at ${__target} has been created successfully!"
+    echo "Symlink at ${__short_target} has been created successfully!"
     echo ""
     return
   fi
 
-  read -p "Failed to soft create a symlink at '${__target}'. Would you like to try to force create it (ln -sf)? (y/N) " __answer
+  read -p "Failed to soft create a symlink at '${__short_target}'. Would you like to try to force create it (ln -sf)? (y/N) " __answer
 
   if [[ "$__answer" != "y" ]]; then
-    echo "Cancelling installation of the current item. User refused to force create a symlink at ${__target} ..."
+    echo "Cancelling installation of the current item. User refused to force create a symlink at ${__short_target} ..."
     return
   fi
 
   echo "Force creating symlink ..."
 
   if ! ln -sf "${__source}" "${__target}"; then
-    echo "Error: Could not create symlink at ${__target}!"
+    echo "Error: Could not create symlink at ${__short_target}!"
   else
-    echo "Symlink ${__target} has been created successfully!"
+    echo "Symlink ${__short_target} has been created successfully!"
     echo ""
   fi
 }
