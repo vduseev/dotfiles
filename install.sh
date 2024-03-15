@@ -2,6 +2,7 @@
 
 set -e
 
+COMPONENTS=('zsh', 'vim', 'tmux', 'alacritty', 'starship')
 SCRIPT_DIR=""
 COUNTER=0
 
@@ -18,69 +19,186 @@ determine_script_location_dir() {
     SCRIPT_DIR="$( cd -P "$( dirname "$__source" )" >/dev/null 2>&1 && pwd )"
 }
 
-determine_script_location_dir
+ensure_target_does_not_exist() {
+  # Arguments
+  local __target="$1"
 
-install_item() {
-  local __item="$1"
+  # Variables
+  local __answer="n"
+
+  if [[ ! -e "${__target}" ]]; then
+    return 0
+  fi
+
+  echo ""
+  echo "Can't proceed with installation. Some file or directory already exists at ${__target}. You can choose to rename it or to delete it (irreversible)."
+
+  read -p "Would you like to rename it to ${__target}.bckp? (y/N) " __answer
+  if [[ "$__answer" == "y" ]]; then
+    mv "${__target}" "${__target}.bckp" 
+    echo "Renamed ${__target} to ${__target}.bckp successfully."
+    return 0
+  fi
+
+  read -p "Would you like to delete existing ${__target}? (y/N) " __answer
+  if [[ "$__answer" == "y" ]]; then
+    rm -rf "${__target}"
+    echo "Removed existing ${__target} successfully."
+    return 0
+  fi
+
+  echo "Cancelling installation of the current item. Target ${__target} not empty."
+  return 1
+}
+
+create_symlink() {
+  # Arguments
+  local __source="$1"
+  local __target="$2"
+
+  # Variables
+  local __answer="n"
+  local __target_exists="n"
+
+  echo "Creating a symlink at '${__target}' pointing to '${__source}' ..."
+
+  # Check that target does not already exists
+  if ! ensure_target_does_not_exist "${__target}"; then
+    return
+  fi
+
+  # Check if target symlink contains a directory
+  if [[ "${__target%/*}" != "$__target" ]]; then
+    local __dir="${__target%/*}"
+    # Create directory if it does not exit
+    if [[ ! -d "${__dir}" ]]; then
+      echo "Directory '${__dir}' does not exist. Creating it ..."
+      mkdir -p "${__dir}"
+    fi
+  fi
+
+  if ln -s "$__source" "$__target"; then
+    echo "Symlink at ${__target} has been created successfully!"
+    echo ""
+    return
+  fi
+
+  read -p "Failed to soft create a symlink at '${__target}'. Would you like to try to force create it (ln -sf)? (y/N) " __answer
+
+  if [[ "$__answer" != "y" ]]; then
+    echo "Cancelling installation of the current item. User refused to force create a symlink at ${__target} ..."
+    return
+  fi
+
+  echo "Force creating symlink ..."
+
+  if ! ln -sf "${__source}" "${__target}"; then
+    echo "Error: Could not create symlink at ${__target}!"
+  else
+    echo "Symlink ${__target} has been created successfully!"
+    echo ""
+  fi
+}
+
+prompt_installation() {
+  # Arguments
+  local __name="$1"
+
+  # Variables
   local __answer="n"
 
   COUNTER=$((COUNTER+1))
-  read -p "${COUNTER}) Would you like to create symlink for ${__item} (y/N)? " __answer
-
+  read -p "${COUNTER}) Would you like to set up ${__name}? (y/N) " __answer
+  
   if [[ "$__answer" == "y" ]]; then
-    echo "Creating symlink to '${SCRIPT_DIR}/${__item}' from '${HOME}/${__item}' ..."
-
-    # Check if symlink contains a directory
-    if [[ "${__item%/*}" != "$__item" ]]; then
-      local __dir="${__item%/*}"
-      # Create directory if it does not exit
-      if [[ ! -d "${HOME}/${__dir}" ]]; then
-        echo "Directory '${HOME}/${__dir}' does not exist. Creating it ..."
-        mkdir -p "${HOME}/${__dir}"
-      fi
-    fi
-
-    if ! ln -s "${SCRIPT_DIR}/${__item}" "${HOME}/${__item}"; then
-      echo ""
-      read -p "Try to force create (ln -sf) the symlink and overwrite your existing file (y/N)? " __answer
-
-      if [[ "$__answer" == "y" ]]; then
-        echo "Force creating symlink ..."
-
-        if ! ln -sf "${SCRIPT_DIR}/${__item}" "${HOME}/${__item}"; then
-          echo "Error: Could not create symlink ${__item}!"
-        else
-          echo "Symlink ${__item} has been created successfully"
-        fi
-
-      else
-        echo "Skipping symlink ${__item} ..."
-      fi
-
-    else
-      echo "Symlink ${__item} has been created successfully"
-    fi
-
+    echo "${__name} will be installed now ..."
+    return 0
   else
-    echo "Skipping symlink ${__item} ..."
+    echo "Skipping installation of ${__name} ..."
+    return 1
   fi
+}
 
+clone_tmux() {
+  echo "Cloning .tmux configuration from https://github.com/gpakosz/.tmux.git ..."
+  git clone https://github.com/gpakosz/.tmux.git "${HOME}/.tmux"
+  echo "Successfully cloned .tmux configuration"
+}
+
+echo_help() {
+  echo "This script will install and link individual items from dotfiles "
+  echo "to your home directory and will prompt you at each step."
+  echo ""
+  echo "If you wish to install a single item, specify it as an argument "
+  echo "to this script. For example: ./install.sh zsh"
+  echo ""
+  echo "Available config items to install: ${COMPONENTS[@]}"
   echo ""
 }
 
 main() {
-  echo "This script will link individual files from dotfiles to your home directory"
-  echo "and will prompt you before each script."
-  echo ""
+  # Arguments
+  local __choice="$1"
 
-  install_item ".zshrc"
-  install_item ".vimrc"
-  install_item ".tmux.conf"
-  install_item ".config/alacritty/alacritty.yml"
-  install_item ".config/alacritty/alacritty.base.yml"
-  install_item ".config/starship.toml"
+  determine_script_location_dir
 
-  echo "Finished creating symlinks!"
+  # Check installation argument
+  if [[ -n "${__choice}" ]]; then
+    case "${__choice}" in
+      help | h | --help | -h | -help)
+        echo_help
+        ;;
+      zsh)
+        create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc"
+        ;;
+      vim)
+        create_symlink "${SCRIPT_DIR}/.vimrc" "${HOME}/.vimrc"
+        ;;
+      tmux)
+        if ! ensure_target_does_not_exist "${HOME}/.tmux"; then
+          exit 1
+        fi
+        clone_tmux
+        create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"       
+        ;;
+      alacritty)
+        create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml"
+        create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.base.yml" "${HOME}/.config/alacritty/alacritty.base.yml"
+        ;;
+      starship)
+        create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
+        ;;
+      *)
+        echo "Unknown installation option: ${__choice}. Choose from: ${COMPONENTS[@]}"
+        exit 1
+    esac
+    exit 0
+  fi
+
+  echo_help
+
+  if prompt_installation "zsh"; then
+    create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc"
+  fi
+  if prompt_installation "vim"; then
+    create_symlink "${SCRIPT_DIR}/.vimrc" "${HOME}/.vimrc"
+  fi
+  if prompt_installation "tmux"; then
+    if ! ensure_target_does_not_exist "${HOME}/.tmux"; then
+      exit 1
+    fi
+    clone_tmux
+    create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"       
+  fi
+  if prompt_installation "alacritty"; then
+    create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml"
+    create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.base.yml" "${HOME}/.config/alacritty/alacritty.base.yml"
+  fi
+  if prompt_installation "starship"; then
+    create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
+  fi
+
+  echo "Finished!"
 }
 
 main "$@"

@@ -10,6 +10,8 @@ Personal collection of "dotfiles" (configuration files that usually reside in yo
 
 ## Requirements
 
+Here is what needs to be installed on the machine before setting up the configuration files in this repository:
+
 | Requirement | What is it |
 | - | - |
 | [Nerd Fonts](https://www.nerdfonts.com/#home) | fonts for developers with icons and symbols |
@@ -52,6 +54,12 @@ Personal collection of "dotfiles" (configuration files that usually reside in yo
    Try to force create (ln -sf) the symlink and overwrite your existing file (y/N)? y
    Force creating symlink ...
    Symlink .tmux.conf has been created successfully
+   ```
+
+   Install individual component:
+
+   ```shell
+   $ ./install.sh zsh
    ```
 
    Or create individual symlinks manually. For example, here is one for `vim`:
@@ -161,21 +169,6 @@ all your terminals to last saved state after you restart tmux or computer.
 | prefix, <kbd>U</kbd>                    | Update plugins                                                    |
 | prefix, <kbd>Alt + u</kbd>              | Remove/uninstall plugins not on the plugin list                   |
 
-### Aliases
-
-The Zsh config comes with some aliases, to which you can add your own by creating or changing the `~/.zshrc.local` file.
-
-| Alias | Command |
-| - | - |
-| `ll` | `ls -lha` |
-| `k` | `kubectl` |
-| `d` | `docker` |
-| `dc` | `docker compose` |
-| `g` | `git` |
-| `gpft` | `git push --follow-tags` |
-| `tf` | `terraform` |
-| `mux` | `tmuxinator` |
-
 ## MacOS
 
 This section describes how to install all the <a href="#requirements">requirements</a> above on MacOS using Homebrew.
@@ -243,10 +236,3 @@ This section describes how to install all the <a href="#requirements">requiremen
   * Choose `^ Control` from the dropdown for *Caps Lock Key*.
   * Click *OK*
 
-## Attributions
-
-Tmux configuration is inspired and borrowed from excellent [config](https://github.com/gpakosz/.tmux) by
-[Gregory Pakosz and other contributors](https://github.com/gpakosz/.tmux/graphs/contributors).
-
-The only reason the original config is not used in combination with a supplied `.tmux.conf.local`
-file is because tmux-continuum is forcefully enabled there, which messes up tmuxinator based windows.
