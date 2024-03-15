@@ -6,86 +6,295 @@ Personal collection of "dotfiles" (configuration files that usually reside in yo
 
 [![Supported Platform](https://img.shields.io/badge/platform-macos_|_linux-blue.svg)](https://shields.io/)
 
+**Table of Contents**
+
+* <a href="#key-benefits">Key benefits of this setup</a>
+* <a href="#target-audience">Target audience</a>
+* <a href="#requirements">Requirements</a>
+  * <a href="#fonts">Fonts</a>
+  * <a href="#shell">Shell</a>
+  * <a href="#shell-prompt">Shell prompt</a>
+  * <a href="#shell-plugins">Shell plugins</a>
+  * <a href="#terminal-multiplexer">Terminal multiplexer</a>
+  * <a href="#terminal">Terminal</a>
+  * <a href="#keyboard-mapping">Keyboard mapping</a>
+* <a href="#installation">Installation</a>
+  * <a href="#clone-repository">Clone repository</a>
+  * <a href="#create-symlinks">Create symlinks to config files</a>
+    * <a href="#wizard-script">Wizard helper script</a>
+    * <a href="#manual-symlinks">Manual symlinks</a>
+  * <a href="#customization">Customization</a>
+* <a href="#cheat-sheet">Cheat sheet</a>
+  * <a href="#shell-shortcuts">Shell shortcuts</a>
+  * <a href="#navigate-buffers">Navigate buffers</a>
+  * <a href="#tmux-shortcuts">Tmux shortcuts</a>
+
+<a id="key-benefits"></a>
+
+## Key benefits of this particular setup
+
+* It is designed to work everywhere
+* Everything you learn to operate this, works on all Linux machines
+* You can install just only parts of it
+* Works with any modern terminal
+
+<a id="target-audience"></a>
+
+## Who is this for?
+
+* You work a lot with a terminal
+* You use vim whenever you can
+* You love yourself some fancy terminal UI
+* You use tmux
+
 <a id="requirements"></a>
 
 ## Requirements
 
-Here is what needs to be installed on the machine before setting up the configuration files in this repository:
+Here is what needs to be installed on your machine before you can proceed with the dotfiles setup.
 
 | Requirement | What is it |
 | - | - |
 | [Nerd Fonts](https://www.nerdfonts.com/#home) | fonts for developers with icons and symbols |
 | [Starship](https://starship.rs/) | interactive, beautiful and fast command line prompt written in Rust |
-| Zsh & [Oh My Zsh](https://ohmyz.sh/) | configuration framework for Zsh |
+| [Zsh](https://en.wikipedia.org/wiki/Z_shell) | extended bourne shell with many improvements |
+| [Oh My Zsh](https://ohmyz.sh/) | configuration framework for zsh |
 | [tmux](https://github.com/tmux/tmux) | terminal multiplexer |
 | [Alacritty](https://alacritty.org/) | fast optimized terminal emulator |
-| Vim | Screen based text editor |
+| [vim](https://www.vim.org/) | screen based text editor |
 
-## Installation
+*Installation instructions for macOS are provided below*.
 
-1. Clone this repository to the desired destination directory. For example, here we clone it into Home directory:
+<a id="fonts"></a>
 
-   ```shell
-   $ git clone https://github.com/vduseev/dotfiles.git ~/.dotfiles
-   ```
+### Fonts
 
-2. Link individual configs as you please.
+This is a set of special extended mono fonts that contain all kinds of special
+signs and symbols to be used for fancy graphics inside your terminal.
 
-   You can use wizard script `install.sh` available in this repository:
+99% of terminals can't draw random graphics. So if you want do draw a beautiful arrow,
+you need to have that glyph in your font. Nerd Fonts is one of the best collection
+of such fonts.
 
-   ```shell
-   $ cd ~/.dotfiles
-   $ ./install.sh
+```shell
+# Add repository with fonts to Homebrew
+brew tap homebrew/cask-fonts
 
-   This script will link individual files from dotfiles to your home directory
-   and will prompt you before each script.
+# Install individual fonts (replace <FONT NAME> with actual name of the font)
+brew install --cask font-<FONT NAME>-nerd-font
+```
 
-   1) Would you like to create symlink for .zshrc (y/N)?
-   Skipping symlink .zshrc ...
+Here are a couple of fonts that I use:
 
-   2) Would you like to create symlink for .vimrc (y/N)? y
-   Creating symlink to '/Users/vduseev/Projects/dotfiles/.vimrc' from '~/.vimrc' ...
-   Symlink .vimrc has been created successfully
+* [Lekton](https://www.programmingfonts.org/#lekton)
+* [Inconsolata](https://www.programmingfonts.org/#inconsolata)
+* [Hack](https://www.programmingfonts.org/#hack)
+* [Noto](https://www.programmingfonts.org/#noto)
 
-   3) Would you like to create symlink for .tmux.conf (y/N)? y
-   Creating symlink to '/Users/vduseev/Projects/dotfiles/.tmux.conf' from '~/.tmux.conf' ...
-   ln: /Users/vduseev/.tmux.conf: File exists
+To install `hack` font, for example, execute the command above like this:
 
-   Try to force create (ln -sf) the symlink and overwrite your existing file (y/N)? y
-   Force creating symlink ...
-   Symlink .tmux.conf has been created successfully
-   ```
+```shell
+brew install --cask font-hack-nerd-font
+```
 
-   Install individual component:
+<a id="shell"></a>
 
-   ```shell
-   $ ./install.sh zsh
-   ```
+### Shell
 
-   Or create individual symlinks manually. For example, here is one for `vim`:
+We are using Zsh as a shell. There are two main reasons for that:
 
-   ```shell
-   $ cd ~
-   $ ln -s ~/.dotfiles/.vimrc
-   ```
+1. It is fully compatible with Bash 4.0.
+1. It is installed by default on macOS.
 
-3. Make changes and keep this configuration as a basis.
+Unlike with `fish` shell or some other alternatives, you don't need
+to learn new syntax or change your scripts. Everything you learn
+with Zsh applies to Bash. Every Sh and Bash script can be executed
+by Zsh without a change.
 
-   Configs for alacritty, bash, zsh, tmux are capable of loading user defined config files
-   with settings that will compliment or overwrite settings implemented in this repository
-   without having to fork it.
+If you use Bash, you can replicate some of what is configured here
+in `.zshrc` in your `.bashrc` config file.
 
-   Put your own settings into the following files and they will be automatically loaded
-   and will overwrite settings implemented in this repository.
+<a id="shell-prompt"></a>
 
-   * Alacritty: `~/.config/alacritty/alacritty.local.yml`
-   * Tmux: `~/.tmux.local`
-   * Bash: `~/.bashrc.local`
-   * Zsh: `~/.zshrc.local`
+### Shell prompt
 
-## Usage
+Starship is the shell prompt. Instead of a boring `$` sign at the start of your
+prompt you can have all kinds of stuff: which git branch you are on, what version
+of Node or Python you are using, which Kubernetes cluster you are connected to.
 
-### Command line
+Starship is a fast and smart prompt written in Rust.
+
+```shell
+brew install starship
+```
+
+<a id="shell-plugins"></a>
+
+### Shell plugins
+
+We are using Oh-My-Zsh.
+This is a package manager for Zsh shell. It doesn't do much, but there are a couple
+of sensible plugins it ships. For example, shortcuts for `git` such as `g` instead.
+
+```shell
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+<a id="terminal-multiplexer"></a>
+
+### Terminal multiplexer
+
+Even when working as a developer, you rarely need more than a few Terminal tabs.
+You can easily achieve that with modern terminals. As most of them provide tab functionality.
+
+However, eventually you reach the point where your terminal won't cut it anymore:
+
+* Have your command running in the background with terminal closed.
+* Keep dozens of terminals open simultaneously and jump between them.
+* All your terminals are restored automatically after restart.
+* And much much more...
+
+Tmux has a steep learning curve but it is worth it. Especially when you do DevOPS/SRE
+kind of work or technical support.
+
+```shell
+brew install tmux
+```
+
+<a id="terminal"></a>
+
+### Terminal
+
+At the moment, or at least until [Ghostly](https://mitchellh.com/ghostty) is released,
+[Alacritty](https://alacritty.org) is the fastest and most advanced terminal emulator you can find.
+
+Alternatives:
+- iTerm2
+- Standard macOS terminal
+
+```shell
+brew install alacritty
+```
+
+<a id="keyboard-mapping"></a>
+
+### Adjust your keyboard mapping
+
+On macOS it makes a lot of sense to remap some of the keys to make the
+keyboard more suitable for terminal based workflow.
+
+In particular, I highly recommend remapping the <kbd>Caps Lock</kbd> key
+to <kbd>Ctrl</kbd> in Settings.
+
+Since many shortcuts in this config use <kbd>Ctrl</kbd> for navigation in the terminal
+it is very useful to change the meaning of the <kbd>Caps Lock</kbd> key to instead work
+like <kbd>Ctrl</kbd>.
+
+In that case you don't have to look for the <kbd>Ctrl</kbd> with your left pinky each time
+you want to press it. It really speeds the workflow up, less error prone, and much more convenient.
+
+* Go to *System Settings* of macOs
+* Choose *Keyboard*
+* Click "Keyboard Shortcuts..."
+* Choose *Modifier Keys...*
+* Choose `^ Control` from the dropdown for *Caps Lock Key*.
+* Click *OK*
+
+*Note: you will need to configure a remap for every new keyboard you connect to you macOS.*
+
+<a id="installation"></a>
+
+## Installation of the dotfiles
+
+<a id="clone-repository"></a>
+
+### Clone the repository
+
+Clone this repository to the desired destination directory. For example, here we clone it into Home directory:
+
+```shell
+$ git clone https://github.com/vduseev/dotfiles.git ~/.dotfiles
+```
+
+<a id="create-symlinks"></a>
+
+### Create symlinks in the home directory
+
+<a id="wizard-script"></a>
+
+#### Using the `install.sh` wizard script
+
+To simplify the whole configuration process, you can use an interactive
+`install.sh` script available in this repository.
+
+The script is very-very careful and will prompt you for confirmation
+at every step. It will ask whether you want to install every specific config part.
+And it will offer to backup, delete or ignore any existing files or symlinks,
+if it finds any.
+
+```shell
+$ ./install.sh
+
+This script will install and link individual items from dotfiles
+to your home directory and will prompt you at each step.
+
+If you wish to install a single item, specify it as an argument
+to this script. For example: ./install.sh zsh
+
+Available config items to install: zsh, vim, tmux, alacritty, starship
+
+1) Would you like to set up zsh? (y/N)
+```
+
+The script also allows you to install a specific config individually.
+
+```shell
+$ ./install.sh vim
+
+Creating a symlink at '~/.vimrc' pointing to '~/.dotfiles/.vimrc' ...
+
+Can't proceed. File or directory already exists at ~/.vimrc.
+Would you like to rename it (r), delete it (d), or skip (N)? (r/d/N) d
+Removed existing ~/.vimrc successfully.
+Symlink at ~/.vimrc has been created successfully!
+```
+
+<a id="manual-symlinks"></a>
+
+#### Configure symlinks manually
+
+You can create individual symlinks manually, of course. For example, here is one for `vim`:
+
+```shell
+$ cd ~
+$ ln -s ~/.dotfiles/.vimrc
+```
+
+<a id="customzation"></a>
+
+### Customization
+
+Do not change linked files! Use `local` customizations instead!
+
+Configs for alacritty, bash, zsh, tmux are capable of loading user defined config files
+with settings that will compliment or overwrite settings implemented in this repository
+without having to fork it.
+
+Put your own settings into the following files and they will be automatically loaded
+and will overwrite settings implemented in this repository.
+
+* Alacritty: `~/.config/alacritty/alacritty.local.toml`
+* Tmux: `~/.tmux.local`
+* Bash: `~/.bashrc.local`
+* Zsh: `~/.zshrc.local`
+
+<a id="cheat-sheet"></a>
+
+## Cheat sheet
+
+<a id="shell-shortcuts"></a>
+
+### Shell keyboard shortcuts
 
 This navigation is based on Emacs and is common for all terminals and computers in general.
 This is not a part of this config and is placed here for information.
@@ -100,11 +309,11 @@ This is not a part of this config and is placed here for information.
 | <kbd>Alt/Option + b</kbd> | Move one word backwards |
 | <kbd>Ctrl + l</kbd> | Clean current terminal window of all text |
 
-<a id="navigate"></a>
+<a id="navigate-buffers"></a>
 
-### Navigate buffers
+### Navigate buffers in `vim` or inside screen outputs from commands such as `man` or `less`.
 
-This navigation shortcuts work in `Vim`, in `man` pages, while reading output of `less` or `more` commands, etc.
+These navigation shortcuts work in `vim`, in `man` pages, while reading output of `less` or `more` commands, etc.
 This is not a part of this config as well and is placed here for information.
 
 | Shortcut | Action |
@@ -121,7 +330,9 @@ This is not a part of this config as well and is placed here for information.
 | <kbd>{</kbd> | Jump up to next empty line |
 | <kbd>}</kbd> | Jump down to next empty line |
 
-### Tmux
+<a id="tmux-shortcuts"></a>
+
+### Tmux shortcuts
 
 Tmux is a terminal multiplexer. It allows you to run multiple virtual terminal windows inside a single actual terminal.
 Tmux starts a process that runs in the background and then attaches to it.
@@ -133,9 +344,9 @@ However, you also navigate between virtual terminals faster and you can create p
 using tools like `tmuxinator` or use [`tmux-continuum`](https://github.com/tmux-plugins/tmux-continuum) to restore
 all your terminals to last saved state after you restart tmux or computer.
 
-* Start new noname session: `tmux`
+* To start new untitled session: `tmux`
 * Start new session with a name (e.g. home): `tmux new -s home`
-* Attach to existing session from another terminal: `tmux a -t home`
+* Attach to existing session from terminal: `tmux a -t home`
 * Kill session: `tmux kill-ses -t home`
 
 | Combination                             | Meaning                                                           |
@@ -168,71 +379,4 @@ all your terminals to last saved state after you restart tmux or computer.
 | prefix, <kbd>I</kbd>                    | Install new plugins                                               |
 | prefix, <kbd>U</kbd>                    | Update plugins                                                    |
 | prefix, <kbd>Alt + u</kbd>              | Remove/uninstall plugins not on the plugin list                   |
-
-## MacOS
-
-This section describes how to install all the <a href="#requirements">requirements</a> above on MacOS using Homebrew.
-
-* Homebrew must be installed
-* Install Nerd Fonts
-
-  ```shell
-  # Add repository with fonts to Homebrew
-  brew tap homebrew/cask-fonts
-
-  # Install individual fonts (replace <FONT NAME> with actual name of the font)
-  brew install --cask font-<FONT NAME>-nerd-font
-  ```
-
-  Here are couple of fonts that I use:
-
-  * [Lekton](https://www.programmingfonts.org/#lekton)
-  * [Inconsolata](https://www.programmingfonts.org/#inconsolata)
-  * [Hack](https://www.programmingfonts.org/#hack)
-  * [Noto](https://www.programmingfonts.org/#noto)
-
-  To install `hack` font, for example, execute the command above like this:
-
-  ```shell
-  brew install --cask font-hack-nerd-font
-  ```
-
-* Install Starship
-
-  ```shell
-  brew install starship
-  ```
-
-* Install Oh-My-Zsh
-
-  ```shell
-  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-  ```
-
-* Install tmux
-
-  ```shell
-  brew install tmux
-  ```
-
-* Install Alacritty
-
-  ```shell
-  brew install alacritty
-  ```
-
-* Remap <kbd>Caps Lock</kbd> key to <kbd>Ctrl</kbd> in Settings
-
-  Because many shortcuts in this config use <kbd>Ctrl</kbd> for navigation in the terminal
-  it is very useful to change the meaning of the <kbd>Caps Lock</kbd> key to instead work
-  like <kbd>Ctrl</kbd>.
-
-  In that case you don't have to look for the <kbd>Ctrl</kbd> with your left pinky each time
-  you want to press it. It really speeds the workflow up, less error prone, and much more convenient.
-
-  * Go to *System Preferences*
-  * Choose *Keyboard*
-  * Click *Modifier Keys...*
-  * Choose `^ Control` from the dropdown for *Caps Lock Key*.
-  * Click *OK*
 

@@ -36,6 +36,13 @@ set t_ZH=
 set t_ZR=
 "set termguicolors
 
+" Set color scheme
+try
+    colorscheme habamax
+catch /^Vim\%((\a\+)\)\=:E185/
+    colorscheme shine
+endtry
+
 " Use same clipboard in Vim and in the system
 " Note: MacOS X specific setting
 set clipboard=unnamed

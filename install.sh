@@ -31,23 +31,21 @@ ensure_target_does_not_exist() {
   fi
 
   echo ""
-  echo "Can't proceed with installation. Some file or directory already exists at ${__target}. You can choose to rename it or to delete it (irreversible)."
+  echo "Can't proceed. File or directory already exists at ${__target}."
 
-  read -p "Would you like to rename it to ${__target}.bckp? (y/N) " __answer
-  if [[ "$__answer" == "y" ]]; then
+  read -p "Would you like to rename it (r), delete it (d), or skip (N)? (r/d/N) " __answer
+  if [[ "$__answer" == "r" ]]; then
     mv "${__target}" "${__target}.bckp" 
     echo "Renamed ${__target} to ${__target}.bckp successfully."
     return 0
   fi
 
-  read -p "Would you like to delete existing ${__target}? (y/N) " __answer
-  if [[ "$__answer" == "y" ]]; then
+  if [[ "$__answer" == "d" ]]; then
     rm -rf "${__target}"
     echo "Removed existing ${__target} successfully."
     return 0
   fi
 
-  echo "Cancelling installation of the current item. Target ${__target} not empty."
   return 1
 }
 
@@ -64,6 +62,7 @@ create_symlink() {
 
   # Check that target does not already exists
   if ! ensure_target_does_not_exist "${__target}"; then
+    echo "Skipping ${__target} symlink because the file already exists."
     return
   fi
 
@@ -162,8 +161,8 @@ main() {
         create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"       
         ;;
       alacritty)
-        create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml"
-        create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.base.yml" "${HOME}/.config/alacritty/alacritty.base.yml"
+        create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml"
+        create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.base.toml" "${HOME}/.config/alacritty/alacritty.base.toml"
         ;;
       starship)
         create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
@@ -191,8 +190,8 @@ main() {
     create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"       
   fi
   if prompt_installation "alacritty"; then
-    create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml"
-    create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.base.yml" "${HOME}/.config/alacritty/alacritty.base.yml"
+    create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml"
+    create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.base.toml" "${HOME}/.config/alacritty/alacritty.base.toml"
   fi
   if prompt_installation "starship"; then
     create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
