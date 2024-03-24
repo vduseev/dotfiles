@@ -15,14 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# --- Oh My Zsh ---------------------------------------------------------------
-
-# Path to your oh-my-zsh installation.
-if [[ -d "$HOME/.oh-my-zsh" ]]; then
-    export ZSH="$HOME/.oh-my-zsh"
-    source $ZSH/oh-my-zsh.sh
-fi
-
 # --- General -----------------------------------------------------------------
 
 export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
@@ -60,10 +52,6 @@ down-line-or-local-history() {
     zle set-local-history 0
 }
 zle -N down-line-or-local-history
-
-# --- Themes ------------------------------------------------------------------
-
-ZSH_THEME="robbyrussell"
 
 # --- Plugins -----------------------------------------------------------------
 
@@ -125,6 +113,17 @@ alias ll="ls -lha"
 
 # Connections
 alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+# Git
+alias g="git"
+alias gs="git status"
+alias ga="git add"
+alias gc="git commit"
+alias gp="git push"
+alias gpft="git push --follow-tags"
+
+# Kubernetes
+alias k="kubectl"
 
 # --- Load user supplied config -----------------------------------------------
 

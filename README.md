@@ -14,7 +14,6 @@ Personal collection of "dotfiles" (configuration files that usually reside in yo
   * <a href="#fonts">Fonts</a>
   * <a href="#shell">Shell</a>
   * <a href="#shell-prompt">Shell prompt</a>
-  * <a href="#shell-plugins">Shell plugins</a>
   * <a href="#terminal-multiplexer">Terminal multiplexer</a>
   * <a href="#terminal">Terminal</a>
   * <a href="#keyboard-mapping">Keyboard mapping</a>
@@ -58,7 +57,6 @@ Here is what needs to be installed on your machine before you can proceed with t
 | [Nerd Fonts](https://www.nerdfonts.com/#home) | fonts for developers with icons and symbols |
 | [Starship](https://starship.rs/) | interactive, beautiful and fast command line prompt written in Rust |
 | [Zsh](https://en.wikipedia.org/wiki/Z_shell) | extended bourne shell with many improvements |
-| [Oh My Zsh](https://ohmyz.sh/) | configuration framework for zsh |
 | [tmux](https://github.com/tmux/tmux) | terminal multiplexer |
 | [Alacritty](https://alacritty.org/) | fast optimized terminal emulator |
 | [vim](https://www.vim.org/) | screen based text editor |
@@ -126,18 +124,6 @@ Starship is a fast and smart prompt written in Rust.
 
 ```shell
 brew install starship
-```
-
-<a id="shell-plugins"></a>
-
-### Shell plugins
-
-We are using Oh-My-Zsh.
-This is a package manager for Zsh shell. It doesn't do much, but there are a couple
-of sensible plugins it ships. For example, shortcuts for `git` such as `g` instead.
-
-```shell
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
 <a id="terminal-multiplexer"></a>
