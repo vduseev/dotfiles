@@ -53,12 +53,31 @@ down-line-or-local-history() {
 }
 zle -N down-line-or-local-history
 
-# --- Plugins -----------------------------------------------------------------
+# --- Plugins ----------------------------------------------------------------
 
 # Starship
 if which starship &> /dev/null; then
     eval "$(starship init zsh)"
 fi
+
+# Atuin
+if which atuin &> /dev/null; then
+    eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
+# --- Tools ------------------------------------------------------------------
+
+# PostgreSQL: psql without full database
+if [[ -d "/opt/homebrew/opt/libpq" ]]; then
+    export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+fi
+
+# Shorebird
+if [[ -d "$HOME/.shorebird" ]]; then
+    export PATH="/Users/vduseev/.shorebird/bin:$PATH"
+fi
+
+# --- Languages --------------------------------------------------------------
 
 # Pyenv
 if which pyenv &> /dev/null; then
@@ -75,17 +94,29 @@ if which rbenv &> /dev/null; then
 fi
 
 # Rust
-if [[ -d "$HOME/.cargo/bin" ]]; then
-    export PATH="$HOME/.cargo/bin:$PATH"
+if [[ -f "$HOME/.cargo/env" ]]; then
+    source "$HOME/.cargo/env"
 fi
 
-# Nvm
+# Node
 if [[ -d "/opt/homebrew/opt/nvm" ]]; then
     export NVM_DIR="$HOME/.nvm"
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
 fi
 
-plugins=(git pyenv macos nmap starship tmux)
+# Java OpenJDK
+if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
+    export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+fi
+
+# Flutter & Dart
+if [[ -d "$HOME/Projects/flutter/flutter/bin" ]]; then
+    export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
+    export PATH="$HOME/.pub-cache/bin:$PATH"
+fi
+if [[ -f "$HOME/.dart-cli-completion/zsh-config.zsh" ]]; then
+    source "$HOME/.dart-cli-completion/zsh-config.zsh"
+fi
 
 # --- Functions ---------------------------------------------------------------
 
@@ -106,6 +137,57 @@ listeners() {
     fi
 }
 
+senv() {
+    local env_files=()
+    local command
+
+    if [[ $# -eq 0 ]]; then
+        echo "Error: no command specified." >&2
+        return 1
+    elif [[ $# -eq 1 ]]; then
+        # Use all .env files found within the current directory, if any
+        env_files=($(find . -maxdepth 1 -name "*.env"))
+        command=("$1")
+    elif [[ $# -gt 1 ]]; then
+        # Use the first argument as env file path or path to directory with env files
+        if [[ -d $1 ]]; then
+            env_files=($(find "$1" -maxdepth 1 -name "*.env"))
+        elif [[ -f $1 ]]; then
+            env_files=("$1")
+        else
+            echo "Error: The specified path does not exist or is not valid." >&2
+            return 1
+        fi
+        command=("${@:2}")
+    fi
+
+    if [[ ${#env_files[@]} -eq 0 ]]; then
+        echo "Warning: No .env files found."
+    else
+        for f in "${env_files[@]}"; do
+            if [[ ! -f $f ]]; then
+                echo "Error: File $f does not exist." >&2
+                return 1
+            fi
+
+            while IFS= read -r line || [[ -n $line ]]; do
+                if [[ $line =~ ^[a-zA-Z_]+[a-zA-Z0-9_]*=(\".*\"|'.*'|[^ ]*)$ ]]; then
+                    key=${line%%=*}
+                    value=${line#*=}
+                    # Remove leading and trailing single or double quotes from the value
+                    value=${value#\"}    # Remove leading double quote
+                    value=${value%\"}    # Remove trailing double quote
+                    value=${value#\'}    # Remove leading single quote
+                    value=${value%\'}    # Remove trailing single quote
+                    export $key="$value"
+                fi
+            done < "$f"
+        done
+    fi
+
+    # Execute the command
+    "${command[@]}"
+}
 # --- Aliases -----------------------------------------------------------------
 
 # Directory navigation
@@ -122,12 +204,22 @@ alias gc="git commit"
 alias gp="git push"
 alias gpft="git push --follow-tags"
 
-# Kubernetes
+# Containers
+alias d="docker"
+alias dc="docker compose"
 alias k="kubectl"
+
+# Node
+alias nr="npm run"
+
+# Flutter
+alias frd="flutter run --dart-define-from-file"
+
+# Other
+alias dr="doppler run --"
 
 # --- Load user supplied config -----------------------------------------------
 
 if [[ -f "$HOME/.zshrc.local" ]]; then
     source "$HOME/.zshrc.local"
 fi
-

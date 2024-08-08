@@ -34,8 +34,8 @@ ensure_target_does_not_exist() {
   echo ""
   echo "Can't proceed. File or directory already exists at ${__short_target}."
 
-  read -p "Would you like to rename it (r), delete it (d), or skip (N)? (r/d/N) " __answer
-  if [[ "$__answer" == "r" ]]; then
+  read -p "Would you like to back it up (b), delete it (d), or skip (N)? (r/d/N) " __answer
+  if [[ "$__answer" == "b" ]]; then
     mv "${__target}" "${__target}.bckp" 
     echo "Renamed ${__short_target} to ${__short_target}.bckp successfully."
     return 0
@@ -169,6 +169,9 @@ main() {
       starship)
         create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
         ;;
+      atuin)
+        create_symlink "${SCRIPT_DIR}/.config/atuin/config.toml" "${HOME}/.config/atuin/config.toml"
+        ;;
       *)
         echo "Unknown installation option: ${__choice}. Choose from: ${COMPONENTS[@]}"
         exit 1
@@ -197,6 +200,9 @@ main() {
   fi
   if prompt_installation "starship"; then
     create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
+  fi
+  if prompt_installation "atuin"; then
+    create_symlink "${SCRIPT_DIR}/.config/atuin/config.toml" "${HOME}/.config/atuin/config.toml"
   fi
 
   echo "Finished!"

@@ -16,6 +16,7 @@ Personal collection of "dotfiles" (configuration files that usually reside in yo
   * <a href="#shell-prompt">Shell prompt</a>
   * <a href="#terminal-multiplexer">Terminal multiplexer</a>
   * <a href="#terminal">Terminal</a>
+  * <a href="#atuin">Atuin</a>
   * <a href="#keyboard-mapping">Keyboard mapping</a>
 * <a href="#installation">Installation</a>
   * <a href="#clone-repository">Clone repository</a>
@@ -60,6 +61,7 @@ Here is what needs to be installed on your machine before you can proceed with t
 | [tmux](https://github.com/tmux/tmux) | terminal multiplexer |
 | [Alacritty](https://alacritty.org/) | fast optimized terminal emulator |
 | [vim](https://www.vim.org/) | screen based text editor |
+| [Atuin](https://atuin.sh) | proper shell history |
 
 *Installation instructions for macOS are provided below*.
 
@@ -145,6 +147,16 @@ kind of work or technical support.
 
 ```shell
 brew install tmux
+```
+
+<a id="atuin"></a>
+
+### Atuin
+
+Atuin is a shell history manager.
+
+```shell
+brew install atuin
 ```
 
 <a id="terminal"></a>
@@ -365,4 +377,3 @@ all your terminals to last saved state after you restart tmux or computer.
 | prefix, <kbd>I</kbd>                    | Install new plugins                                               |
 | prefix, <kbd>U</kbd>                    | Update plugins                                                    |
 | prefix, <kbd>Alt + u</kbd>              | Remove/uninstall plugins not on the plugin list                   |
-
