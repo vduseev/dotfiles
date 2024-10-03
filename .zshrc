@@ -53,7 +53,7 @@ down-line-or-local-history() {
 }
 zle -N down-line-or-local-history
 
-# --- Plugins ----------------------------------------------------------------
+# --- Complimentary terminal tools --------------------------------------------
 
 # Starship
 if which starship &> /dev/null; then
@@ -65,19 +65,7 @@ if which atuin &> /dev/null; then
     eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
-# --- Tools ------------------------------------------------------------------
-
-# PostgreSQL: psql without full database
-if [[ -d "/opt/homebrew/opt/libpq" ]]; then
-    export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-fi
-
-# Shorebird
-if [[ -d "$HOME/.shorebird" ]]; then
-    export PATH="/Users/vduseev/.shorebird/bin:$PATH"
-fi
-
-# --- Languages --------------------------------------------------------------
+# --- Environment managers ----------------------------------------------------
 
 # Pyenv
 if which pyenv &> /dev/null; then
@@ -88,34 +76,47 @@ if which pyenv &> /dev/null; then
     export ZSH_PYENV_VIRTUALENV=false
 fi
 
-# Ruby
-if which rbenv &> /dev/null; then
-    eval "$(rbenv init -)"
-fi
-
-# Rust
-if [[ -f "$HOME/.cargo/env" ]]; then
-    source "$HOME/.cargo/env"
-fi
-
 # Node
 if [[ -d "/opt/homebrew/opt/nvm" ]]; then
     export NVM_DIR="$HOME/.nvm"
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
 fi
 
-# Java OpenJDK
+# Ruby
+if which rbenv &> /dev/null; then
+    eval "$(rbenv init -)"
+fi
+
+# --- Specific languages ------------------------------------------------------
+
+# Rust
+if [[ -f "$HOME/.cargo/env" ]]; then
+    source "$HOME/.cargo/env"
+fi
+
+# Java
 if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
     export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 fi
 
-# Flutter & Dart
+# Flutter
 if [[ -d "$HOME/Projects/flutter/flutter/bin" ]]; then
     export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
     export PATH="$HOME/.pub-cache/bin:$PATH"
 fi
 if [[ -f "$HOME/.dart-cli-completion/zsh-config.zsh" ]]; then
     source "$HOME/.dart-cli-completion/zsh-config.zsh"
+fi
+if [[ -d "$HOME/.shorebird" ]]; then
+    export PATH="/Users/vduseev/.shorebird/bin:$PATH"
+fi
+if [[ -f "$HOME/.dart-cli-completion/zsh-config.zsh" ]]; then
+    source "$HOME/.dart-cli-completion/zsh-config.zsh"
+fi
+
+# PostgreSQL: psql without full database
+if [[ -d "/opt/homebrew/opt/libpq" ]]; then
+    export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 fi
 
 # --- Functions ---------------------------------------------------------------
@@ -188,6 +189,7 @@ senv() {
     # Execute the command
     "${command[@]}"
 }
+
 # --- Aliases -----------------------------------------------------------------
 
 # Directory navigation
@@ -208,15 +210,11 @@ alias gpft="git push --follow-tags"
 alias d="docker"
 alias dc="docker compose"
 alias k="kubectl"
-
-# Node
-alias nr="npm run"
-
-# Flutter
-alias frd="flutter run --dart-define-from-file"
+alias p="podman"
 
 # Other
 alias dr="doppler run --"
+alias frd"flutter run --dart-define-from-file"
 
 # --- Load user supplied config -----------------------------------------------
 
