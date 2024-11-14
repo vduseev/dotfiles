@@ -193,6 +193,7 @@ main() {
     fi
     clone_tmux
     create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"       
+    create_symlink "${SCRIPT_DIR}/.tmux.conf.local" "${HOME}/.tmux.conf.local"
   fi
   if prompt_installation "alacritty"; then
     create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml"
