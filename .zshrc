@@ -204,7 +204,7 @@ alias gs="git status"
 alias ga="git add"
 alias gc="git commit"
 alias gp="git push"
-alias gl="git log --pretty=format:'%h%x09%an%x09%ad%x09%s'"
+alias gl="git log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short"
 alias gpft="git push --follow-tags"
 
 # Containers
