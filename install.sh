@@ -2,7 +2,7 @@
 
 set -e
 
-COMPONENTS=('zsh', 'vim', 'tmux', 'alacritty', 'starship')
+COMPONENTS=('zsh', 'vim', 'tmux', 'starship')
 SCRIPT_DIR=""
 COUNTER=0
 
@@ -194,10 +194,6 @@ main() {
     clone_tmux
     create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"       
     create_symlink "${SCRIPT_DIR}/.tmux.conf.local" "${HOME}/.tmux.conf.local"
-  fi
-  if prompt_installation "alacritty"; then
-    create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml"
-    create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.base.toml" "${HOME}/.config/alacritty/alacritty.base.toml"
   fi
   if prompt_installation "starship"; then
     create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
