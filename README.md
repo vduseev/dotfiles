@@ -59,7 +59,7 @@ Here is what needs to be installed on your machine before you can proceed with t
 | [Starship](https://starship.rs/) | interactive, beautiful and fast command line prompt written in Rust |
 | [Zsh](https://en.wikipedia.org/wiki/Z_shell) | extended bourne shell with many improvements |
 | [tmux](https://github.com/tmux/tmux) | terminal multiplexer |
-| [Alacritty](https://alacritty.org/) | fast optimized terminal emulator |
+| [Ghostty](https://ghostty.org/) | best terminal emulator |
 | [vim](https://www.vim.org/) | screen based text editor |
 | [Atuin](https://atuin.sh) | proper shell history |
 
@@ -163,15 +163,14 @@ brew install atuin
 
 ### Terminal
 
-At the moment, or at least until [Ghostly](https://mitchellh.com/ghostty) is released,
-[Alacritty](https://alacritty.org) is the fastest and most advanced terminal emulator you can find.
+We are using best terminal emulator available [Ghostty](https://ghostty.org).
 
 Alternatives:
 - iTerm2
 - Standard macOS terminal
 
 ```shell
-brew install alacritty
+brew install --case ghostty
 ```
 
 <a id="keyboard-mapping"></a>
@@ -239,7 +238,7 @@ to your home directory and will prompt you at each step.
 If you wish to install a single item, specify it as an argument
 to this script. For example: ./install.sh zsh
 
-Available config items to install: zsh, vim, tmux, alacritty, starship
+Available config items to install: zsh, vim, tmux, starship
 
 1) Would you like to set up zsh? (y/N)
 ```
@@ -274,14 +273,13 @@ $ ln -s ~/.dotfiles/.vimrc
 
 Do not change linked files! Use `local` customizations instead!
 
-Configs for alacritty, bash, zsh, tmux are capable of loading user defined config files
+Configs for bash, zsh, tmux are capable of loading user defined config files
 with settings that will compliment or overwrite settings implemented in this repository
 without having to fork it.
 
 Put your own settings into the following files and they will be automatically loaded
 and will overwrite settings implemented in this repository.
 
-* Alacritty: `~/.config/alacritty/alacritty.local.toml`
 * Tmux: `~/.tmux.local`
 * Bash: `~/.bashrc.local`
 * Zsh: `~/.zshrc.local`

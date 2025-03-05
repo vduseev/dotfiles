@@ -1,5 +1,0 @@
-import = [
-  "~/.config/alacritty/alacritty.base.toml",
-  "~/.config/alacritty/alacritty.local.yml"
-]
-
