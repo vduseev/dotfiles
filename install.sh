@@ -2,7 +2,7 @@
 
 set -e
 
-COMPONENTS=('zsh', 'vim', 'tmux', 'starship')
+COMPONENTS=('zsh', 'vim', 'tmux', 'starship', 'ghostty')
 SCRIPT_DIR=""
 COUNTER=0
 
@@ -162,15 +162,14 @@ main() {
         clone_tmux
         create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"       
         ;;
-      alacritty)
-        create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml"
-        create_symlink "${SCRIPT_DIR}/.config/alacritty/alacritty.base.toml" "${HOME}/.config/alacritty/alacritty.base.toml"
-        ;;
       starship)
         create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
         ;;
       atuin)
         create_symlink "${SCRIPT_DIR}/.config/atuin/config.toml" "${HOME}/.config/atuin/config.toml"
+        ;;
+      ghostty)
+        create_symlink "${SCRIPT_DIR}/.config/ghostty/config" "${HOME}/.config/ghostty/config"
         ;;
       *)
         echo "Unknown installation option: ${__choice}. Choose from: ${COMPONENTS[@]}"
@@ -200,6 +199,9 @@ main() {
   fi
   if prompt_installation "atuin"; then
     create_symlink "${SCRIPT_DIR}/.config/atuin/config.toml" "${HOME}/.config/atuin/config.toml"
+  fi
+  if prompt_installation "ghostty"; then
+    create_symlink "${SCRIPT_DIR}/.config/ghostty/config" "${HOME}/.config/ghostty/config"
   fi
 
   echo "Finished!"
