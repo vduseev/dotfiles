@@ -1,1 +1,4 @@
+# Reload config with cmd+shift+,
+
 macos-option-as-alt = true
+confirm-close-surface = false
