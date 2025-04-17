@@ -7,6 +7,13 @@ unbind C-b
 set -g prefix C-a
 bind C-a send-prefix
 
+# Navigate to left and right across windows
+unbind C-h
+unbind C-l
+# -n: do no require the prefix, -r keeping key pressed repeats the command
+bind -n -r C-k previous-window # select previous window
+bind -n -r C-j next-window     # select next window
+
 # -- tpm -----------------------------------------------------------------------
 
 set -g @plugin 'tmux-plugins/tmux-resurrect'

@@ -226,7 +226,10 @@ alias p="podman"
 
 # Other
 alias dr="doppler run --"
-alias frd"flutter run --dart-define-from-file"
+alias f="flutter"
+alias fr="flutter run"
+alias frd="flutter run --dart-define-from-file"
+alias fbr="flutter pub run build_runner build --delete-conflicting-outputs"
 
 # --- Load user supplied config -----------------------------------------------
 
