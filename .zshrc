@@ -70,7 +70,7 @@ if [[ -f "$HOME/.config/op/plugins.sh" ]]; then
   source "$HOME/.config/op/plugins.sh"
 fi
 
-# --- Environment managers ----------------------------------------------------
+# --- Languages & Technologies ------------------------------------------------
 
 # Pyenv
 if which pyenv &> /dev/null; then
@@ -79,6 +79,11 @@ if which pyenv &> /dev/null; then
     # eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
     export ZSH_PYENV_VIRTUALENV=false
+fi
+
+# uv
+if which uv &> /dev/null; then
+   export PATH="$HOME/.local/bin:$PATH"
 fi
 
 # Node
@@ -91,8 +96,6 @@ fi
 if which rbenv &> /dev/null; then
     eval "$(rbenv init -)"
 fi
-
-# --- Specific languages ------------------------------------------------------
 
 # Rust
 if [[ -f "$HOME/.cargo/env" ]]; then
@@ -109,14 +112,8 @@ if [[ -d "$HOME/Projects/flutter/flutter/bin" ]]; then
     export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
     export PATH="$HOME/.pub-cache/bin:$PATH"
 fi
-if [[ -f "$HOME/.dart-cli-completion/zsh-config.zsh" ]]; then
-    source "$HOME/.dart-cli-completion/zsh-config.zsh"
-fi
 if [[ -d "$HOME/.shorebird" ]]; then
     export PATH="/Users/vduseev/.shorebird/bin:$PATH"
-fi
-if [[ -f "$HOME/.dart-cli-completion/zsh-config.zsh" ]]; then
-    source "$HOME/.dart-cli-completion/zsh-config.zsh"
 fi
 
 # PostgreSQL: psql without full database
@@ -141,58 +138,6 @@ listeners() {
     else
         echo "Error: cannot find correct executable to find port listeners"
     fi
-}
-
-senv() {
-    local env_files=()
-    local command
-
-    if [[ $# -eq 0 ]]; then
-        echo "Error: no command specified." >&2
-        return 1
-    elif [[ $# -eq 1 ]]; then
-        # Use all .env files found within the current directory, if any
-        env_files=($(find . -maxdepth 1 -name "*.env"))
-        command=("$1")
-    elif [[ $# -gt 1 ]]; then
-        # Use the first argument as env file path or path to directory with env files
-        if [[ -d $1 ]]; then
-            env_files=($(find "$1" -maxdepth 1 -name "*.env"))
-        elif [[ -f $1 ]]; then
-            env_files=("$1")
-        else
-            echo "Error: The specified path does not exist or is not valid." >&2
-            return 1
-        fi
-        command=("${@:2}")
-    fi
-
-    if [[ ${#env_files[@]} -eq 0 ]]; then
-        echo "Warning: No .env files found."
-    else
-        for f in "${env_files[@]}"; do
-            if [[ ! -f $f ]]; then
-                echo "Error: File $f does not exist." >&2
-                return 1
-            fi
-
-            while IFS= read -r line || [[ -n $line ]]; do
-                if [[ $line =~ ^[a-zA-Z_]+[a-zA-Z0-9_]*=(\".*\"|'.*'|[^ ]*)$ ]]; then
-                    key=${line%%=*}
-                    value=${line#*=}
-                    # Remove leading and trailing single or double quotes from the value
-                    value=${value#\"}    # Remove leading double quote
-                    value=${value%\"}    # Remove trailing double quote
-                    value=${value#\'}    # Remove leading single quote
-                    value=${value%\'}    # Remove trailing single quote
-                    export $key="$value"
-                fi
-            done < "$f"
-        done
-    fi
-
-    # Execute the command
-    "${command[@]}"
 }
 
 dc() {
@@ -241,9 +186,4 @@ alias fbr="flutter pub run build_runner build --delete-conflicting-outputs"
 if [[ -f "$HOME/.zshrc.local" ]]; then
     source "$HOME/.zshrc.local"
 fi
-
-## [Completion] 
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/vduseev/.dart-cli-completion/zsh-config.zsh ]] && . /Users/vduseev/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
 
