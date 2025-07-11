@@ -65,6 +65,11 @@ if which atuin &> /dev/null; then
     eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
+# 1Password
+if [[ -f "$HOME/.config/op/plugins.sh" ]]; then
+  source "$HOME/.config/op/plugins.sh"
+fi
+
 # --- Environment managers ----------------------------------------------------
 
 # Pyenv
@@ -236,3 +241,9 @@ alias fbr="flutter pub run build_runner build --delete-conflicting-outputs"
 if [[ -f "$HOME/.zshrc.local" ]]; then
     source "$HOME/.zshrc.local"
 fi
+
+## [Completion] 
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/vduseev/.dart-cli-completion/zsh-config.zsh ]] && . /Users/vduseev/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
