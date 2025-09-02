@@ -2,3 +2,5 @@
 
 macos-option-as-alt = true
 confirm-close-surface = false
+auto-update-channel = tip
+

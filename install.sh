@@ -2,7 +2,7 @@
 
 set -e
 
-COMPONENTS=('zsh', 'vim', 'tmux', 'starship', 'ghostty')
+COMPONENTS=('zsh', 'bash', 'vim', 'tmux', 'starship', 'ghostty', 'atuin', 'nix')
 SCRIPT_DIR=""
 COUNTER=0
 
@@ -152,6 +152,10 @@ main() {
       zsh)
         create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc"
         ;;
+      bash)
+        create_symlink "${SCRIPT_DIR}/.bashrc" "${HOME}/.bashrc"
+        create_symlink "${SCRIPT_DIR}/.bash_profile" "${HOME}/.bash_profile"
+        ;;
       vim)
         create_symlink "${SCRIPT_DIR}/.vimrc" "${HOME}/.vimrc"
         ;;
@@ -171,6 +175,10 @@ main() {
       ghostty)
         create_symlink "${SCRIPT_DIR}/.config/ghostty/config" "${HOME}/.config/ghostty/config"
         ;;
+      nix)
+        create_symlink "${SCRIPT_DIR}/.config/nix" "${HOME}/.config/nix"
+        create_symlink "${SCRIPT_DIR}/.config/home-manager" "${HOME}/.config/home-manager"
+        ;;
       *)
         echo "Unknown installation option: ${__choice}. Choose from: ${COMPONENTS[@]}"
         exit 1
@@ -182,6 +190,10 @@ main() {
 
   if prompt_installation "zsh"; then
     create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc"
+  fi
+  if prompt_installation "bash"; then
+    create_symlink "${SCRIPT_DIR}/.bashrc" "${HOME}/.bashrc"
+    create_symlink "${SCRIPT_DIR}/.bash_profile" "${HOME}/.bash_profile"
   fi
   if prompt_installation "vim"; then
     create_symlink "${SCRIPT_DIR}/.vimrc" "${HOME}/.vimrc"
@@ -202,6 +214,10 @@ main() {
   fi
   if prompt_installation "ghostty"; then
     create_symlink "${SCRIPT_DIR}/.config/ghostty/config" "${HOME}/.config/ghostty/config"
+  fi
+  if prompt_installation "nix"; then
+    create_symlink "${SCRIPT_DIR}/.config/nix" "${HOME}/.config/nix"
+    create_symlink "${SCRIPT_DIR}/.config/home-manager" "${HOME}/.config/home-manager"
   fi
 
   echo "Finished!"

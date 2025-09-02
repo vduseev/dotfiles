@@ -1,80 +1,38 @@
-# Default variables
+# Bash Configuration
+# https://github.com/vduseev/dotfiles
+#
+# Copyright: 2017- Vagiz Duseev (@vduseev)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# --- General ----------------------------------------------------------------
+
+export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 export SHELL="bash"
 export EDITOR="vim"
 export VISUAL="vim"
 
+# Language for compatibility with Mosh
+# See: https://github.com/mobile-shell/mosh/issues/793#issuecomment-368755189
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
+# --- Prompt -----------------------------------------------------------------
+
 # Use colors.
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
-
-# Custom $PATH with extra locations.
-export PATH=/bin:/sbin
-export PATH=/usr/bin:/usr/sbin:$PATH
-export PATH=/usr/local/bin:/usr/local/sbin:$PATH
-export PATH=/opt/homebrew/bin:$PATH
-
-# Include alias file (if present) containing aliases for ssh, etc.
-if [ -f ~/.bash_aliases ]
-then
-  source ~/.bash_aliases
-fi
-
-# Include function file (if present)
-if [ -f ~/.bash_functions ]
-then
-  source ~/.bash_functions
-fi
-
-# Configure Homebrew
-if [[ "$OSTYPE" =~ "darwin" ]]; then
-  # Tell homebrew to not autoupdate every single time I run it (just once a week).
-  #export HOMEBREW_AUTO_UPDATE_SECS=604800
-
-  brew_prefix=`brew --prefix`
-  if [ -f $brew_prefix/etc/bash_completion ]; then
-    source $brew_prefix/etc/bash_completion
-  fi
-fi
-
-# Turn on kubectl autocomplete.
-#if [ -x "$(command -v kubectl)" ]; then
-#  source <(kubectl completion bash)
-#fi
-
-# Use nvm.
-#export NVM_DIR="$HOME/.nvm"
-#if [ -f "$brew_prefix/opt/nvm/nvm.sh" ]; then
-#  source "$brew_prefix/opt/nvm/nvm.sh"
-#fi
-
-# Add Java interpreter
-#export JAVA_HOME="/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home "
-#export PATH="$JAVA_HOME/bin:$PATH"
-
-# Use rbenv.
-if command -v "rbenv" > /dev/null 2>&1; then
-  eval "$(rbenv init -)"
-fi
-
-# pyenv location
-#export PYENV_ROOT="$HOME/.pyenv"
-#export PATH="$PYENV_ROOT/bin:$PATH"
-
-# Initialize pyenv
-# When pyenv is not initialized yet, the `type -t pyenv` command
-# return file as a type for the pyenv executable.
-# Contrary to that, when initialized, `type -t` for pyenv returns
-# "function" as a type.
-# This prevents pyenv from entering an infinite loop if initialization.
-if [ -n "$(type -t pyenv)" ] && [ "$(type -t pyenv)" = "file" ]; then
-  # If command exists, then init (hmmm... doesn't make much sense, does it?)
-  if command -v "pyenv" > /dev/null 2>&1; then
-    eval "$(pyenv init -)"
-  fi
-fi
-
-# Initialize Poetry
-#export PATH="$HOME/.poetry/bin:$PATH"
 
 # Nicer prompt.
 # \d - current day of the week
@@ -106,16 +64,68 @@ __BASH_PROMT_ROW_2="${NC}└─${__BASH_PROMT_SYMBOL} "
 # Definition of the whole promt
 export PS1="${__BASH_PROMT_ROW_1}\n${__BASH_PROMT_ROW_2}"
 
-# Initialize tmuxinator auto-completion
-if [ -f '$HOME/.lib/tmuxinator/tmuxinator.bash' ]; then
-  source $HOME/.lib/tmuxinator/tmuxinator.bash
+# --- Nix --------------------------------------------------------------------
+
+if [[ -d "$HOME/.nix-profile" ]]; then
+  source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
 fi
 
-export KUBECONFIG=$HOME/.kube/config
-export PATH="$HOME/.poetry/bin:$PATH"
-export PATH="/usr/local/go/bin:$PATH"
-export PATH="$HOME/go/bin:$PATH"
+# --- Complimentary terminal tools -------------------------------------------
 
-if [ -f ~/.bashrc.local ]; then
-  source ~/.bashrc.local
+# Atuin
+if which atuin &> /dev/null; then
+  eval "$(atuin init bash --disable-up-arrow)"
+fi
+
+# --- Languages & Technologies -----------------------------------------------
+
+export KUBECONFIG=$HOME/.kube/config
+
+# --- Functions --------------------------------------------------------------
+
+dc() {
+  if which docker &> /dev/null; then
+    # If docker is installed on the system, then we most likely have
+    # docker compose installed as well
+    docker compose "$@"
+  else
+    # Try docker-compose directly, as a separately installed binary.
+    # For example, in case of Podman.
+    docker-compose "$@"
+  fi
+}
+
+# --- Aliases ----------------------------------------------------------------
+
+# Directory navigation
+alias ll="ls -lha"
+
+# Connections
+alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+# Git
+alias g="git"
+alias gs="git status"
+alias ga="git add"
+alias gc="git commit"
+alias gp="git push"
+alias gl="git log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short"
+alias gpft="git push --follow-tags"
+
+# Containers
+alias d="docker"
+alias k="kubectl"
+alias p="podman"
+
+# Other
+alias dr="doppler run --"
+alias f="flutter"
+alias fr="flutter run"
+alias frd="flutter run --dart-define-from-file"
+alias fbr="flutter pub run build_runner build --delete-conflicting-outputs"
+
+# --- Load user supplied config ----------------------------------------------
+
+if [[ -f "$HOME/.bashrc.local" ]]; then
+  source "$HOME/.bashrc.local"
 fi

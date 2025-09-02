@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# --- General -----------------------------------------------------------------
+# --- General ----------------------------------------------------------------
 
 export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 export EDITOR=vim
@@ -34,7 +34,7 @@ set -o emacs
 # Add Homebrew path on MacOS
 export PATH="/opt/homebrew/bin:${PATH}"
 
-# --- Individual history for each terminal window -----------------------------
+# --- Individual history for each terminal window ----------------------------
 
 # Use arrows to scroll local history
 bindkey "${key[Up]}" up-line-or-local-history
@@ -53,7 +53,7 @@ down-line-or-local-history() {
 }
 zle -N down-line-or-local-history
 
-# --- Complimentary terminal tools --------------------------------------------
+# --- Complimentary terminal tools -------------------------------------------
 
 # Starship
 if which starship &> /dev/null; then
@@ -70,7 +70,7 @@ if [[ -f "$HOME/.config/op/plugins.sh" ]]; then
   source "$HOME/.config/op/plugins.sh"
 fi
 
-# --- Languages & Technologies ------------------------------------------------
+# --- Languages & Technologies -----------------------------------------------
 
 # Pyenv
 if which pyenv &> /dev/null; then
@@ -121,7 +121,7 @@ if [[ -d "/opt/homebrew/opt/libpq" ]]; then
     export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 fi
 
-# --- Functions ---------------------------------------------------------------
+# --- Functions --------------------------------------------------------------
 
 listeners() {
     if [[ $# -ne 1 ]]; then
@@ -152,7 +152,7 @@ dc() {
   fi
 }
 
-# --- Aliases -----------------------------------------------------------------
+# --- Aliases ----------------------------------------------------------------
 
 # Directory navigation
 alias ll="ls -lha"
@@ -181,9 +181,8 @@ alias fr="flutter run"
 alias frd="flutter run --dart-define-from-file"
 alias fbr="flutter pub run build_runner build --delete-conflicting-outputs"
 
-# --- Load user supplied config -----------------------------------------------
+# --- Load user supplied config ----------------------------------------------
 
 if [[ -f "$HOME/.zshrc.local" ]]; then
     source "$HOME/.zshrc.local"
 fi
-
