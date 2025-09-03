@@ -185,6 +185,7 @@ main() {
         ;;
       nix)
         create_symlink "${SCRIPT_DIR}/.config/nix" "${HOME}/.config/nix"
+        create_symlink "${SCRIPT_DIR}/.config/nixpkgs" "${HOME}/.config/nixpkgs"
         create_symlink "${SCRIPT_DIR}/.config/home-manager" "${HOME}/.config/home-manager"
         ;;
       *)
@@ -231,6 +232,7 @@ main() {
   fi
   if prompt_installation "nix"; then
     create_symlink "${SCRIPT_DIR}/.config/nix" "${HOME}/.config/nix"
+    create_symlink "${SCRIPT_DIR}/.config/nixpkgs" "${HOME}/.config/nixpkgs"
     create_symlink "${SCRIPT_DIR}/.config/home-manager" "${HOME}/.config/home-manager"
   fi
 
