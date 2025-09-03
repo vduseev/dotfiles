@@ -71,7 +71,7 @@ if [[ -d "$HOME/.nix-profile" ]]; then
   if [[ -d "$HOME/.nix-profile/bin" ]]; then
     export PATH="$HOME/.nix-profile/bin:$PATH"
   fi
-  
+
   # Load nix profile settings
   if [[ -d "$HOME/.nix-profile/etc/profile.d" ]]; then
     for nix_profile_file in "$HOME/.nix-profile/etc/profile.d"/*.sh; do
@@ -84,6 +84,11 @@ fi
 
 # --- Complimentary terminal tools -------------------------------------------
 
+# Starship
+if which starship &> /dev/null; then
+    eval "$(starship init bash)"
+fi
+
 # Atuin
 if which atuin &> /dev/null; then
   eval "$(atuin init bash --disable-up-arrow)"
@@ -93,6 +98,25 @@ fi
 
 if [[ -f "$HOME/.kube/config" ]]; then
   export KUBECONFIG=$HOME/.kube/config
+fi
+
+# uv
+if which uv &> /dev/null; then
+   export PATH="$HOME/.local/bin:$PATH"
+fi
+
+# Rust
+if [[ -f "$HOME/.cargo/env" ]]; then
+    source "$HOME/.cargo/env"
+fi
+
+# Flutter
+if [[ -d "$HOME/projects/flutter/flutter/bin" ]]; then
+    export PATH="$HOME/projects/flutter/flutter/bin:$PATH"
+    export PATH="$HOME/.pub-cache/bin:$PATH"
+fi
+if [[ -d "$HOME/.shorebird" ]]; then
+    export PATH="$HOME/.shorebird/bin:$PATH"
 fi
 
 # --- Aliases ----------------------------------------------------------------

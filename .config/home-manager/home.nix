@@ -2,12 +2,36 @@
 {
   home = {
     packages = with pkgs; [
+      # Test
       hello
-      bun
+      
+      # Shell
       atuin
-      jq
-      vscode
       starship
+
+      # CLI tools
+      jq
+      gh
+      awscli
+      ffmpeg
+      terraform
+      zola
+      yt-dlp
+      tree
+      restic
+      rustic
+      
+      # Languages
+      uv
+      bun
+      rustup
+      flutter
+      postgersql
+      d2
+
+      # Coding
+      vscode
+      claude-code
     ];
 
     username = "vduseev";
