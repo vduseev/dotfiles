@@ -13,7 +13,7 @@ set -g history-limit 50000
 set -gu prefix2
 unbind C-a
 unbind C-b
-if-shell '[ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] || [ -n "$TMUX" ]' {
+if-shell '[ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]' {
     # Remote/nested session
     set -g prefix C-b
     bind C-b send-prefix
