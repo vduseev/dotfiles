@@ -55,9 +55,9 @@ create_symlink() {
   fi
 
   echo "${__echo_prefix}error: ${__soft_create_output}"
-  read -p "${__echo_prefix}fix: would you like to force-create the symlink (ln -sf)? (y/N) " __answer
+  read -p "${__echo_prefix}>> fix: would you like to force-create the symlink (ln -sf)? (y/N) " __answer
   if [[ "$__answer" != "y" ]]; then
-    echo "${__echo_prefix}>> cancelled"
+    echo "${__echo_prefix}[x] cancelled"
     return
   fi
 
@@ -68,7 +68,7 @@ create_symlink() {
   fi
 
   echo "${__echo_prefix}error: ${__force_create_output}"
-  echo "${__echo_prefix}>> skipping"
+  echo "${__echo_prefix}[x] skipping"
 }
 
 prompt_installation() {
@@ -79,7 +79,7 @@ prompt_installation() {
   local __answer="n"
 
   COUNTER=$((COUNTER+1))
-  read -p "${COUNTER}. Configure symlinks for ${__name}? (y/N) " __answer
+  read -p ">> ${COUNTER}. configure symlinks for ${__name}? (y/N) " __answer
   
   if [[ "$__answer" == "y" ]]; then
     return 0
@@ -100,7 +100,7 @@ ensure_target_dir_does_not_exist() {
   fi
 
   echo "${__echo_prefix}error: ${__target} directory already exists"
-  read -p "${__echo_prefix}fix: would you like to delete it? (y/N) " __answer
+  read -p "${__echo_prefix}>> fix: would you like to delete it? (y/N) " __answer
   if [[ "$__answer" != "y" ]]; then
     return 1
   fi
@@ -195,8 +195,8 @@ main() {
 
   echo_help
 
-  trap 'printf "\n>> interrupted by user\n"; exit 0' SIGINT
-  echo ">> installing all options one-by-one (Ctrl+C to exit, ENTER to skip):"
+  trap 'printf "\n[x] interrupted by user\n"; exit 0' SIGINT
+  echo "Installing all options one-by-one (Ctrl+C to exit, ENTER to skip):"
 
   NESTED_LEVEL="1"
 
