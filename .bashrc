@@ -67,6 +67,9 @@ export PS1="${__BASH_PROMT_ROW_1}\n${__BASH_PROMT_ROW_2}"
 # --- Nix --------------------------------------------------------------------
 
 if [[ -d "$HOME/.nix-profile" ]]; then
+  if [[ -d "$HOME/.nix-profile/bin" ]]; then
+    export PATH="$HOME/.nix-profile/bin:$PATH"
+  fi
   if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
     source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
   fi
