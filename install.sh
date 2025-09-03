@@ -3,6 +3,9 @@
 # Stop on error, unset variable, or a failed command in the pipeline
 set -euo pipefail
 
+# Capture Ctrl+C and exit gracefully
+trap 'printf "\n[x] interrupted by user\n"; exit 0' SIGINT
+
 COMPONENTS=('zsh' 'bash' 'vim' 'tmux' 'starship' 'ghostty' 'atuin' 'nix')
 SCRIPT_DIR=""
 COUNTER=0
@@ -38,12 +41,20 @@ create_symlink() {
 
   echo "${__echo_prefix}action: ln -s '${__short_original}' '${__short_link}'"
 
-  # Check if symlink contains a directory
-  if [[ "${__link%/*}" != "$__link" ]]; then
+  # Check if symlink target is within a directory (but not if the link itself ends with /)
+  if [[ "${__link%/*}" != "$__link" && "${__link}" != */ ]]; then
     local __dir="${__link%/*}"
     # Create directory if it does not exit
     if [[ ! -d "${__dir}" ]]; then
-      mkdir -p "${__dir}"
+      echo "${__echo_prefix}warning: directory ${__dir} does not exist, creating it"
+      echo "${__echo_prefix}action: mkdir -p '${__dir}'"
+      local __mkdir_output=$(mkdir -p "${__dir}" 2>&1)
+      if [[ -z "$__mkdir_output" ]]; then
+        echo "${__echo_prefix}success: directory ${__dir} created"
+      else
+        echo "${__echo_prefix}error: ${__mkdir_output}"
+        exit 1
+      fi
     fi
   fi
 
@@ -56,7 +67,7 @@ create_symlink() {
   fi
 
   echo "${__echo_prefix}error: ${__soft_create_output}"
-  read -p "${__echo_prefix}>> fix: would you like to force-create the symlink (ln -sf)? (y/N) " __answer
+  read -p "${__echo_prefix}>> fix: would you like to force-create ${__short_link} (ln -sf)? (y/N) " __answer
   if [[ "$__answer" != "y" ]]; then
     echo "${__echo_prefix}[x] cancelled"
     return
@@ -97,23 +108,24 @@ ensure_target_dir_does_not_exist() {
   fi
 
   if [[ ! -d "${__target}" ]]; then
-    return 0
+    return
   fi
 
   echo "${__echo_prefix}error: ${__target} directory already exists"
   read -p "${__echo_prefix}>> fix: would you like to delete it? (y/N) " __answer
-  if [[ "$__answer" != "y" ]]; then
-    return 1
+  if [[ "$__answer" == "y" ]]; then
+    local __remove_dir_output=$(rm -rf "${__target}" 2>&1)
+    if [[ -z "$__remove_dir_output" ]]; then
+      echo "${__echo_prefix}success: removed ${__target} directory"
+      return
+    else
+      echo "${__echo_prefix}error: ${__remove_dir_output}"
+      exit 1
+    fi
+  else
+    echo "${__echo_prefix}error: can't proceed with existing ${__target} directory"
+    exit 1
   fi
-
-  local __remove_dir_output=$(rm -rf "${__target}" 2>&1)
-  if [[ -n "$__remove_dir_output" ]]; then
-    echo "${__echo_prefix}error: ${__remove_dir_output}"
-    return 1
-  fi
-
-  echo "${__echo_prefix}success: removed ${__target} directory"
-  return 0
 }
 
 clone_tmux() {
@@ -143,6 +155,45 @@ echo_help() {
   echo ""
 }
 
+install_zsh() {
+  create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc"
+}
+
+install_bash() {
+  create_symlink "${SCRIPT_DIR}/.bashrc" "${HOME}/.bashrc"
+  create_symlink "${SCRIPT_DIR}/.bash_profile" "${HOME}/.bash_profile"
+}
+
+install_vim() {
+  create_symlink "${SCRIPT_DIR}/.vimrc" "${HOME}/.vimrc"
+}
+
+install_tmux() {
+  ensure_target_dir_does_not_exist "${HOME}/.tmux"
+  clone_tmux
+  create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"
+  create_symlink "${SCRIPT_DIR}/.tmux.conf.local" "${HOME}/.tmux.conf.local"
+}
+
+install_starship() {
+  create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
+}
+
+install_atuin() {
+  create_symlink "${SCRIPT_DIR}/.config/atuin/config.toml" "${HOME}/.config/atuin/config.toml"
+}
+
+install_ghostty() {
+  create_symlink "${SCRIPT_DIR}/.config/ghostty/config" "${HOME}/.config/ghostty/config"
+}
+
+install_nix() {
+  create_symlink "${SCRIPT_DIR}/.config/nix/nix.conf" "${HOME}/.config/nix/nix.conf"
+  create_symlink "${SCRIPT_DIR}/.config/nixpkgs/config.nix" "${HOME}/.config/nixpkgs/config.nix"
+  create_symlink "${SCRIPT_DIR}/.config/home-manager/flake.nix" "${HOME}/.config/home-manager/flake.nix"
+  create_symlink "${SCRIPT_DIR}/.config/home-manager/home.nix" "${HOME}/.config/home-manager/home.nix"
+}
+
 main() {
   # Arguments
   local __choice="${1:-}"
@@ -153,41 +204,23 @@ main() {
   if [[ -n "${__choice}" ]]; then
     case "${__choice}" in
       help | h | --help | -h | -help)
-        echo_help
-        ;;
+        echo_help;;
       zsh)
-        create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc" 
-        ;;
+        install_zsh;;
       bash)
-        create_symlink "${SCRIPT_DIR}/.bashrc" "${HOME}/.bashrc"
-        create_symlink "${SCRIPT_DIR}/.bash_profile" "${HOME}/.bash_profile"
-        ;;
+        install_bash;;
       vim)
-        create_symlink "${SCRIPT_DIR}/.vimrc" "${HOME}/.vimrc"
-        ;;
+        install_vim;;
       tmux)
-        if ! ensure_target_dir_does_not_exist "${HOME}/.tmux"; then
-          echo "error: can't proceed with existing ${HOME}/.tmux directory"
-          exit 1
-        fi
-        clone_tmux
-        create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"
-        create_symlink "${SCRIPT_DIR}/.tmux.conf.local" "${HOME}/.tmux.conf.local"
-        ;;
+        install_tmux;;
       starship)
-        create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
-        ;;
+        install_starship;;
       atuin)
-        create_symlink "${SCRIPT_DIR}/.config/atuin" "${HOME}/.config/atuin"
-        ;;
+        install_atuin;;
       ghostty)
-        create_symlink "${SCRIPT_DIR}/.config/ghostty" "${HOME}/.config/ghostty"
-        ;;
+        install_ghostty;;
       nix)
-        create_symlink "${SCRIPT_DIR}/.config/nix" "${HOME}/.config/nix"
-        create_symlink "${SCRIPT_DIR}/.config/nixpkgs" "${HOME}/.config/nixpkgs"
-        create_symlink "${SCRIPT_DIR}/.config/home-manager" "${HOME}/.config/home-manager"
-        ;;
+        install_nix;;
       *)
         echo "error: unknown option ${__choice}. Choose from: ${COMPONENTS[@]}"
         exit 1
@@ -196,48 +229,36 @@ main() {
   fi
 
   echo_help
-
-  trap 'printf "\n[x] interrupted by user\n"; exit 0' SIGINT
   echo "Installing all options one-by-one (Ctrl+C to exit, ENTER to skip):"
 
   NESTED_LEVEL="1"
 
   if prompt_installation "zsh"; then
-    create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc"
+    install_zsh
   fi
   if prompt_installation "bash"; then
-    create_symlink "${SCRIPT_DIR}/.bashrc" "${HOME}/.bashrc"
-    create_symlink "${SCRIPT_DIR}/.bash_profile" "${HOME}/.bash_profile"
+    install_bash
   fi
   if prompt_installation "vim"; then
-    create_symlink "${SCRIPT_DIR}/.vimrc" "${HOME}/.vimrc"
+    install_vim
   fi
   if prompt_installation "tmux"; then
-    if ! ensure_target_dir_does_not_exist "${HOME}/.tmux"; then
-      echo "error: can't proceed with existing ${HOME}/.tmux directory"
-      exit 1
-    fi
-    clone_tmux
-    create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"       
-    create_symlink "${SCRIPT_DIR}/.tmux.conf.local" "${HOME}/.tmux.conf.local"
+    install_tmux
   fi
   if prompt_installation "starship"; then
-    create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
+    install_starship
   fi
   if prompt_installation "atuin"; then
-    create_symlink "${SCRIPT_DIR}/.config/atuin" "${HOME}/.config/atuin"
+    install_atuin
   fi
   if prompt_installation "ghostty"; then
-    create_symlink "${SCRIPT_DIR}/.config/ghostty" "${HOME}/.config/ghostty"
+    install_ghostty
   fi
   if prompt_installation "nix"; then
-    create_symlink "${SCRIPT_DIR}/.config/nix" "${HOME}/.config/nix"
-    create_symlink "${SCRIPT_DIR}/.config/nixpkgs" "${HOME}/.config/nixpkgs"
-    create_symlink "${SCRIPT_DIR}/.config/home-manager" "${HOME}/.config/home-manager"
+    install_nix
   fi
 
   echo "Finished!"
-  trap - SIGINT
 }
 
 main "$@"
