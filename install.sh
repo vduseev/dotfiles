@@ -189,7 +189,6 @@ install_ghostty() {
 
 install_nix() {
   create_symlink "${SCRIPT_DIR}/.config/nix/nix.conf" "${HOME}/.config/nix/nix.conf"
-  create_symlink "${SCRIPT_DIR}/.config/nixpkgs/config.nix" "${HOME}/.config/nixpkgs/config.nix"
   create_symlink "${SCRIPT_DIR}/.config/home-manager/flake.nix" "${HOME}/.config/home-manager/flake.nix"
   create_symlink "${SCRIPT_DIR}/.config/home-manager/home.nix" "${HOME}/.config/home-manager/home.nix"
 }

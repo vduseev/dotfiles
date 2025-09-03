@@ -37,6 +37,8 @@
     username = "vduseev";
     homeDirectory = "/home/vduseev";
 
+    nixpkgs.config.allowUnfree = true;
+
     stateVersion = "25.05";
   };
 }
