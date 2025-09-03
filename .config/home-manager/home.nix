@@ -26,7 +26,7 @@
       bun
       rustup
       flutter
-      postgersql
+      postgresql
       d2
 
       # Coding

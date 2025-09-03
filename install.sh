@@ -6,7 +6,7 @@ set -euo pipefail
 # Capture Ctrl+C and exit gracefully
 trap 'printf "\n[x] interrupted by user\n"; exit 0' SIGINT
 
-COMPONENTS=('zsh' 'bash' 'vim' 'tmux' 'starship' 'ghostty' 'atuin' 'nix')
+COMPONENTS=('zsh' 'bash' 'vim' 'tmux' 'starship' 'ghostty' 'atuin' 'nix' 'git')
 SCRIPT_DIR=""
 COUNTER=0
 NESTED_LEVEL=""
@@ -194,6 +194,10 @@ install_nix() {
   create_symlink "${SCRIPT_DIR}/.config/home-manager/home.nix" "${HOME}/.config/home-manager/home.nix"
 }
 
+install_git() {
+  create_symlink "${SCRIPT_DIR}/.gitconfig" "${HOME}/.gitconfig"
+}
+
 main() {
   # Arguments
   local __choice="${1:-}"
@@ -221,6 +225,8 @@ main() {
         install_ghostty;;
       nix)
         install_nix;;
+      git)
+        install_git;;
       *)
         echo "error: unknown option ${__choice}. Choose from: ${COMPONENTS[@]}"
         exit 1
@@ -256,6 +262,9 @@ main() {
   fi
   if prompt_installation "nix"; then
     install_nix
+  fi
+  if prompt_installation "git"; then
+    install_git
   fi
 
   echo "Finished!"
