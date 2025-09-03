@@ -1,8 +1,9 @@
 #!/bin/bash
 
-set -e
+# Stop on error, unset variable, or a failed command in the pipeline
+set -euo pipefail
 
-COMPONENTS=('zsh', 'bash', 'vim', 'tmux', 'starship', 'ghostty', 'atuin', 'nix')
+COMPONENTS=('zsh' 'bash' 'vim' 'tmux' 'starship' 'ghostty' 'atuin' 'nix')
 SCRIPT_DIR=""
 COUNTER=0
 
@@ -21,57 +22,53 @@ determine_script_location_dir() {
 
 create_symlink() {
   # Arguments
-  local __source="$1"
-  local __target="$2"
+  local __original="$1"
+  local __link="$2"
 
   # Variables
   local __answer="n"
-  local __short_source="${__source/"${HOME}"/~}"
-  local __short_target="${__target/"${HOME}"/~}"
+  local __short_original="${__original/"${HOME}"/~}"
+  local __short_link="${__link/"${HOME}"/~}"
   local __echo_prefix=""
 
   if [[ -n "$NESTED_LEVEL" ]]; then
     __echo_prefix="  "
   fi
 
-  echo "${__echo_prefix}action: ln -s '${__short_source}' '${__short_target}'"
+  echo "${__echo_prefix}action: ln -s '${__short_original}' '${__short_link}'"
 
-  # Check if target symlink contains a directory
-  if [[ "${__target%/*}" != "$__target" ]]; then
-    local __dir="${__target%/*}"
+  # Check if symlink contains a directory
+  if [[ "${__link%/*}" != "$__link" ]]; then
+    local __dir="${__link%/*}"
     # Create directory if it does not exit
     if [[ ! -d "${__dir}" ]]; then
       mkdir -p "${__dir}"
     fi
   fi
 
-  # Capture exit code and any output
-  local __soft_create_output=$(ln -s "$__source" "$__target" 2>&1)
-  local __soft_create_exit_code=$?
-  if [[ $__soft_create_exit_code -eq 0 ]]; then
-    echo "${__echo_prefix}success: symlink ${__short_target} created"
+  # On Linux and MacOS: ln -s [point-to-this-target] [from-this-link]
+
+  local __soft_create_output=$(ln -s "$__original" "$__link" 2>&1)
+  if [[ -z "$__soft_create_output" ]]; then
+    echo "${__echo_prefix}success: symlink ${__short_link} created"
     return
-  else
-    echo "${__echo_prefix}error: ${__soft_create_output}"
   fi
 
-  read -p "${__echo_prefix}fix: would you like to force it (ln -sf)? (y/N) " __answer
-
+  echo "${__echo_prefix}error: ${__soft_create_output}"
+  read -p "${__echo_prefix}fix: would you like to force-create the symlink (ln -sf)? (y/N) " __answer
   if [[ "$__answer" != "y" ]]; then
-    echo "${__echo_prefix}cancelled"
+    echo "${__echo_prefix}>> cancelled"
     return
   fi
 
-  local __force_create_output=$(ln -sf "${__source}" "${__target}" 2>&1)
-  local __force_create_exit_code=$?
-  if [[ $__force_create_exit_code -eq 0 ]]; then
-    echo "${__echo_prefix}success: symlink ${__short_target} created with -f flag"
+  local __force_create_output=$(ln -sf "${__original}" "${__link}" 2>&1)
+  if [[ -z "$__force_create_output" ]]; then
+    echo "${__echo_prefix}success: symlink ${__short_link} created with -f flag"
     return
-  else
-    echo "${__echo_prefix}error: ${__force_create_output}"
   fi
 
-  echo "${__echo_prefix}skipping"
+  echo "${__echo_prefix}error: ${__force_create_output}"
+  echo "${__echo_prefix}>> skipping"
 }
 
 prompt_installation() {
@@ -98,17 +95,23 @@ ensure_target_dir_does_not_exist() {
     __echo_prefix="  "
   fi
 
-  if [[ -d "${__target}" ]]; then
-    echo "${__echo_prefix}error: ${__target} directory already exists"
-    read -p "${__echo_prefix}fix: would you like to delete it? (y/N) " __answer
-    if [[ "$__answer" == "y" ]]; then
-      rm -rf "${__target}"
-      return 0
-    else
-      return 1
-    fi
+  if [[ ! -d "${__target}" ]]; then
+    return 0
+  fi
+
+  echo "${__echo_prefix}error: ${__target} directory already exists"
+  read -p "${__echo_prefix}fix: would you like to delete it? (y/N) " __answer
+  if [[ "$__answer" != "y" ]]; then
     return 1
   fi
+
+  local __remove_dir_output=$(rm -rf "${__target}" 2>&1)
+  if [[ -n "$__remove_dir_output" ]]; then
+    echo "${__echo_prefix}error: ${__remove_dir_output}"
+    return 1
+  fi
+
+  echo "${__echo_prefix}success: removed ${__target} directory"
   return 0
 }
 
@@ -117,30 +120,31 @@ clone_tmux() {
   if [[ -n "$NESTED_LEVEL" ]]; then
     __echo_prefix="  "
   fi
+
   echo "${__echo_prefix}action: git clone https://github.com/gpakosz/.tmux.git ${HOME}/.tmux"
-  local __clone_output=$(git clone https://github.com/gpakosz/.tmux.git "${HOME}/.tmux" 2>&1)
-  local __clone_exit_code=$?
-  if [[ $__clone_exit_code -eq 0 ]]; then
-    echo "${__echo_prefix}success: cloned https://github.com/gpakosz/.tmux.git"
-  else
+  local __clone_output=$(git clone --quiet https://github.com/gpakosz/.tmux.git "${HOME}/.tmux" 2>&1)
+  if [[ -n "$__clone_output" ]]; then
     echo "${__echo_prefix}error: ${__clone_output}"
+    return 1
   fi
+
+  echo "${__echo_prefix}success: cloned https://github.com/gpakosz/.tmux.git"
 }
 
 echo_help() {
   echo "vduseev/dotfiles: symlink dotfiles to home directory"
   echo ""
-  echo "  Usage: ./install.sh [component]"
-  echo "  - prompt for each component: ${0}"
-  echo "  - symlink specific component: ${0} zsh"
+  echo "  Usage: ./install.sh [option]"
+  echo "  - prompt for each option: ${0}"
+  echo "  - symlink specific option: ${0} zsh"
   echo ""
-  echo "  Components: ${COMPONENTS[@]}"
+  echo "  Options: ${COMPONENTS[@]}"
   echo ""
 }
 
 main() {
   # Arguments
-  local __choice="$1"
+  local __choice="${1:-}"
 
   determine_script_location_dir
 
@@ -183,7 +187,7 @@ main() {
         create_symlink "${SCRIPT_DIR}/.config/home-manager" "${HOME}/.config/home-manager"
         ;;
       *)
-        echo "error: unknown component ${__choice}. Choose from: ${COMPONENTS[@]}"
+        echo "error: unknown option ${__choice}. Choose from: ${COMPONENTS[@]}"
         exit 1
     esac
     exit 0
@@ -191,7 +195,8 @@ main() {
 
   echo_help
 
-  echo "Starting step-by-step installation (Ctrl+C to exit, ENTER to skip):"
+  trap 'printf "\n>> interrupted by user\n"; exit 0' SIGINT
+  echo ">> installing all options one-by-one (Ctrl+C to exit, ENTER to skip):"
 
   NESTED_LEVEL="1"
 
@@ -229,6 +234,7 @@ main() {
   fi
 
   echo "Finished!"
+  trap - SIGINT
 }
 
 main "$@"

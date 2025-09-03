@@ -7,6 +7,7 @@
       atuin
       jq
       vscode
+      starship
     ];
 
     username = "vduseev";
