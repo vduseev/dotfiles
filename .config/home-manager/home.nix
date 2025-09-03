@@ -1,5 +1,7 @@
 { lib, pkgs, ... }:
 {
+  nixpkgs.config.allowUnfree = true;
+
   home = {
     packages = with pkgs; [
       # Test
@@ -36,8 +38,6 @@
 
     username = "vduseev";
     homeDirectory = "/home/vduseev";
-
-    nixpkgs.config.allowUnfree = true;
 
     stateVersion = "25.05";
   };
