@@ -1,11 +1,27 @@
+# -- tpm -----------------------------------------------------------------------
+
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @continuum-restore 'on'
+
 # -- user customizations -------------------------------------------------------
 
-# replace C-b by C-a instead of using both prefixes
+# Increase history size
+set -g history-limit 50000
+
+# Use C-a prefix locally and C-b remotely
 set -gu prefix2
 unbind C-a
 unbind C-b
-set -g prefix C-a
-bind C-a send-prefix
+if-shell '[ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] || [ -n "$TMUX" ]' {
+    # Remote/nested session
+    set -g prefix C-b
+    bind C-b send-prefix
+} {
+    # Local session
+    set -g prefix C-a
+    bind C-a send-prefix
+}
 
 # Navigate to left and right across windows
 unbind C-h
@@ -16,11 +32,7 @@ bind -n -r C-j next-window     # select next window
 
 # Open new windows in ~ home directory
 unbind c
-bind c  new-window     -c ~
+bind c new-window -c ~
 
-# -- tpm -----------------------------------------------------------------------
-
-set -g @plugin 'tmux-plugins/tmux-resurrect'
-set -g @plugin 'tmux-plugins/tmux-continuum'
-set -g @continuum-restore 'on'
-
+# Restore pane contents
+set -g @resurrect-capture-pane-contents 'on'
