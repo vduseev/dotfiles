@@ -19,37 +19,6 @@ determine_script_location_dir() {
     SCRIPT_DIR="$( cd -P "$( dirname "$__source" )" >/dev/null 2>&1 && pwd )"
 }
 
-ensure_target_does_not_exist() {
-  # Arguments
-  local __target="$1"
-
-  # Variables
-  local __answer="n"
-  local __short_target="${__target/"${HOME}"/~}"
-
-  if [[ ! -e "${__target}" ]]; then
-    return 0
-  fi
-
-  echo ""
-  echo "Can't proceed. File or directory already exists at ${__short_target}."
-
-  read -p "Would you like to back it up (b), delete it (d), or skip (N)? (r/d/N) " __answer
-  if [[ "$__answer" == "b" ]]; then
-    mv "${__target}" "${__target}.bckp" 
-    echo "Renamed ${__short_target} to ${__short_target}.bckp successfully."
-    return 0
-  fi
-
-  if [[ "$__answer" == "d" ]]; then
-    rm -rf "${__target}"
-    echo "Removed existing ${__short_target} successfully."
-    return 0
-  fi
-
-  return 1
-}
-
 create_symlink() {
   # Arguments
   local __source="$1"
@@ -59,46 +28,50 @@ create_symlink() {
   local __answer="n"
   local __short_source="${__source/"${HOME}"/~}"
   local __short_target="${__target/"${HOME}"/~}"
+  local __echo_prefix=""
 
-  echo "Creating a symlink at '${__short_target}' pointing to '${__short_source}' ..."
-
-  # Check that target does not already exists
-  if ! ensure_target_does_not_exist "${__target}"; then
-    echo "Skipping ${__short_target} symlink because the file already exists."
-    return
+  if [[ -n "$NESTED_LEVEL" ]]; then
+    __echo_prefix="  "
   fi
+
+  echo "${__echo_prefix}action: ln -s '${__short_source}' '${__short_target}'"
 
   # Check if target symlink contains a directory
   if [[ "${__target%/*}" != "$__target" ]]; then
     local __dir="${__target%/*}"
     # Create directory if it does not exit
     if [[ ! -d "${__dir}" ]]; then
-      echo "Directory '${__dir}' does not exist. Creating it ..."
       mkdir -p "${__dir}"
     fi
   fi
 
-  if ln -s "$__source" "$__target"; then
-    echo "Symlink at ${__short_target} has been created successfully!"
-    echo ""
+  # Capture exit code and any output
+  local __soft_create_output=$(ln -s "$__source" "$__target" 2>&1)
+  local __soft_create_exit_code=$?
+  if [[ $__soft_create_exit_code -eq 0 ]]; then
+    echo "${__echo_prefix}success: symlink ${__short_target} created"
     return
+  else
+    echo "${__echo_prefix}error: ${__soft_create_output}"
   fi
 
-  read -p "Failed to soft create a symlink at '${__short_target}'. Would you like to try to force create it (ln -sf)? (y/N) " __answer
+  read -p "${__echo_prefix}fix: would you like to force it (ln -sf)? (y/N) " __answer
 
   if [[ "$__answer" != "y" ]]; then
-    echo "Cancelling installation of the current item. User refused to force create a symlink at ${__short_target} ..."
+    echo "${__echo_prefix}cancelled"
     return
   fi
 
-  echo "Force creating symlink ..."
-
-  if ! ln -sf "${__source}" "${__target}"; then
-    echo "Error: Could not create symlink at ${__short_target}!"
+  local __force_create_output=$(ln -sf "${__source}" "${__target}" 2>&1)
+  local __force_create_exit_code=$?
+  if [[ $__force_create_exit_code -eq 0 ]]; then
+    echo "${__echo_prefix}success: symlink ${__short_target} created with -f flag"
+    return
   else
-    echo "Symlink ${__short_target} has been created successfully!"
-    echo ""
+    echo "${__echo_prefix}error: ${__force_create_output}"
   fi
+
+  echo "${__echo_prefix}skipping"
 }
 
 prompt_installation() {
@@ -109,31 +82,59 @@ prompt_installation() {
   local __answer="n"
 
   COUNTER=$((COUNTER+1))
-  read -p "${COUNTER}) Would you like to set up ${__name}? (y/N) " __answer
+  read -p "${COUNTER}. Configure symlinks for ${__name}? (y/N) " __answer
   
   if [[ "$__answer" == "y" ]]; then
-    echo "${__name} will be installed now ..."
     return 0
   else
-    echo "Skipping installation of ${__name} ..."
     return 1
   fi
 }
 
+ensure_target_dir_does_not_exist() {
+  local __target="$1"
+  local __echo_prefix=""
+  if [[ -n "$NESTED_LEVEL" ]]; then
+    __echo_prefix="  "
+  fi
+
+  if [[ -d "${__target}" ]]; then
+    echo "${__echo_prefix}error: ${__target} directory already exists"
+    read -p "${__echo_prefix}fix: would you like to delete it? (y/N) " __answer
+    if [[ "$__answer" == "y" ]]; then
+      rm -rf "${__target}"
+      return 0
+    else
+      return 1
+    fi
+    return 1
+  fi
+  return 0
+}
+
 clone_tmux() {
-  echo "Cloning .tmux configuration from https://github.com/gpakosz/.tmux.git ..."
-  git clone https://github.com/gpakosz/.tmux.git "${HOME}/.tmux"
-  echo "Successfully cloned .tmux configuration"
+  local __echo_prefix=""
+  if [[ -n "$NESTED_LEVEL" ]]; then
+    __echo_prefix="  "
+  fi
+  echo "${__echo_prefix}action: git clone https://github.com/gpakosz/.tmux.git ${HOME}/.tmux"
+  local __clone_output=$(git clone https://github.com/gpakosz/.tmux.git "${HOME}/.tmux" 2>&1)
+  local __clone_exit_code=$?
+  if [[ $__clone_exit_code -eq 0 ]]; then
+    echo "${__echo_prefix}success: cloned https://github.com/gpakosz/.tmux.git"
+  else
+    echo "${__echo_prefix}error: ${__clone_output}"
+  fi
 }
 
 echo_help() {
-  echo "This script will install and link individual items from dotfiles "
-  echo "to your home directory and will prompt you at each step."
+  echo "vduseev/dotfiles: symlink dotfiles to home directory"
   echo ""
-  echo "If you wish to install a single item, specify it as an argument "
-  echo "to this script. For example: ./install.sh zsh"
+  echo "  Usage: ./install.sh [component]"
+  echo "  - prompt for each component: ${0}"
+  echo "  - symlink specific component: ${0} zsh"
   echo ""
-  echo "Available config items to install: ${COMPONENTS[@]}"
+  echo "  Components: ${COMPONENTS[@]}"
   echo ""
 }
 
@@ -150,7 +151,7 @@ main() {
         echo_help
         ;;
       zsh)
-        create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc"
+        create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc" 
         ;;
       bash)
         create_symlink "${SCRIPT_DIR}/.bashrc" "${HOME}/.bashrc"
@@ -160,33 +161,39 @@ main() {
         create_symlink "${SCRIPT_DIR}/.vimrc" "${HOME}/.vimrc"
         ;;
       tmux)
-        if ! ensure_target_does_not_exist "${HOME}/.tmux"; then
+        if ! ensure_target_dir_does_not_exist "${HOME}/.tmux"; then
+          echo "error: can't proceed with existing ${HOME}/.tmux directory"
           exit 1
         fi
         clone_tmux
-        create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"       
+        create_symlink "${HOME}/.tmux/.tmux.conf" "${HOME}/.tmux.conf"
+        create_symlink "${SCRIPT_DIR}/.tmux.conf.local" "${HOME}/.tmux.conf.local"
         ;;
       starship)
         create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
         ;;
       atuin)
-        create_symlink "${SCRIPT_DIR}/.config/atuin/config.toml" "${HOME}/.config/atuin/config.toml"
+        create_symlink "${SCRIPT_DIR}/.config/atuin" "${HOME}/.config/atuin"
         ;;
       ghostty)
-        create_symlink "${SCRIPT_DIR}/.config/ghostty/config" "${HOME}/.config/ghostty/config"
+        create_symlink "${SCRIPT_DIR}/.config/ghostty" "${HOME}/.config/ghostty"
         ;;
       nix)
         create_symlink "${SCRIPT_DIR}/.config/nix" "${HOME}/.config/nix"
         create_symlink "${SCRIPT_DIR}/.config/home-manager" "${HOME}/.config/home-manager"
         ;;
       *)
-        echo "Unknown installation option: ${__choice}. Choose from: ${COMPONENTS[@]}"
+        echo "error: unknown component ${__choice}. Choose from: ${COMPONENTS[@]}"
         exit 1
     esac
     exit 0
   fi
 
   echo_help
+
+  echo "Starting step-by-step installation (Ctrl+C to exit, ENTER to skip):"
+
+  NESTED_LEVEL="1"
 
   if prompt_installation "zsh"; then
     create_symlink "${SCRIPT_DIR}/.zshrc" "${HOME}/.zshrc"
@@ -199,7 +206,8 @@ main() {
     create_symlink "${SCRIPT_DIR}/.vimrc" "${HOME}/.vimrc"
   fi
   if prompt_installation "tmux"; then
-    if ! ensure_target_does_not_exist "${HOME}/.tmux"; then
+    if ! ensure_target_dir_does_not_exist "${HOME}/.tmux"; then
+      echo "error: can't proceed with existing ${HOME}/.tmux directory"
       exit 1
     fi
     clone_tmux
@@ -210,10 +218,10 @@ main() {
     create_symlink "${SCRIPT_DIR}/.config/starship.toml" "${HOME}/.config/starship.toml"
   fi
   if prompt_installation "atuin"; then
-    create_symlink "${SCRIPT_DIR}/.config/atuin/config.toml" "${HOME}/.config/atuin/config.toml"
+    create_symlink "${SCRIPT_DIR}/.config/atuin" "${HOME}/.config/atuin"
   fi
   if prompt_installation "ghostty"; then
-    create_symlink "${SCRIPT_DIR}/.config/ghostty/config" "${HOME}/.config/ghostty/config"
+    create_symlink "${SCRIPT_DIR}/.config/ghostty" "${HOME}/.config/ghostty"
   fi
   if prompt_installation "nix"; then
     create_symlink "${SCRIPT_DIR}/.config/nix" "${HOME}/.config/nix"
