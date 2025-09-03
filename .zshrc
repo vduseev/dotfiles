@@ -140,18 +140,6 @@ listeners() {
     fi
 }
 
-dc() {
-  if which docker &> /dev/null; then
-    # If docker is installed on the system, then we most likely have
-    # docker compose installed as well
-    docker compose "$@"
-  else
-    # Try docker-compose directly, as a separately installed binary.
-    # For example, in case of Podman.
-    docker-compose "$@"
-  fi
-}
-
 # --- Aliases ----------------------------------------------------------------
 
 # Directory navigation
@@ -171,6 +159,7 @@ alias gpft="git push --follow-tags"
 
 # Containers
 alias d="docker"
+alias dc="docker compose"
 alias k="kubectl"
 alias p="podman"
 

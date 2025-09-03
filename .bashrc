@@ -67,7 +67,9 @@ export PS1="${__BASH_PROMT_ROW_1}\n${__BASH_PROMT_ROW_2}"
 # --- Nix --------------------------------------------------------------------
 
 if [[ -d "$HOME/.nix-profile" ]]; then
-  source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
+  if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
+    source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
+  fi
 fi
 
 # --- Complimentary terminal tools -------------------------------------------
@@ -79,21 +81,9 @@ fi
 
 # --- Languages & Technologies -----------------------------------------------
 
-export KUBECONFIG=$HOME/.kube/config
-
-# --- Functions --------------------------------------------------------------
-
-dc() {
-  if which docker &> /dev/null; then
-    # If docker is installed on the system, then we most likely have
-    # docker compose installed as well
-    docker compose "$@"
-  else
-    # Try docker-compose directly, as a separately installed binary.
-    # For example, in case of Podman.
-    docker-compose "$@"
-  fi
-}
+if [[ -f "$HOME/.kube/config" ]]; then
+  export KUBECONFIG=$HOME/.kube/config
+fi
 
 # --- Aliases ----------------------------------------------------------------
 
@@ -114,6 +104,7 @@ alias gpft="git push --follow-tags"
 
 # Containers
 alias d="docker"
+alias dc="docker compose"
 alias k="kubectl"
 alias p="podman"
 
