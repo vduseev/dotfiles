@@ -6,6 +6,7 @@ set -euo pipefail
 COMPONENTS=('zsh' 'bash' 'vim' 'tmux' 'starship' 'ghostty' 'atuin' 'nix')
 SCRIPT_DIR=""
 COUNTER=0
+NESTED_LEVEL=""
 
 determine_script_location_dir() {
     local __source="${BASH_SOURCE[0]}"
