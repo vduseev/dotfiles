@@ -41,15 +41,15 @@ bindkey "${key[Up]}" up-line-or-local-history
 bindkey "${key[Down]}" down-line-or-local-history
 
 up-line-or-local-history() {
-    zle set-local-history 1
-    zle up-line-or-history
-    zle set-local-history 0
+  zle set-local-history 1
+  zle up-line-or-history
+  zle set-local-history 0
 }
 zle -N up-line-or-local-history
 down-line-or-local-history() {
-    zle set-local-history 1
-    zle down-line-or-history
-    zle set-local-history 0
+  zle set-local-history 1
+  zle down-line-or-history
+  zle set-local-history 0
 }
 zle -N down-line-or-local-history
 
@@ -57,12 +57,12 @@ zle -N down-line-or-local-history
 
 # Starship
 if which starship &> /dev/null; then
-    eval "$(starship init zsh)"
+  eval "$(starship init zsh)"
 fi
 
 # Atuin
 if which atuin &> /dev/null; then
-    eval "$(atuin init zsh --disable-up-arrow)"
+  eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
 # 1Password
@@ -74,70 +74,75 @@ fi
 
 # Pyenv
 if which pyenv &> /dev/null; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    # eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"
-    export ZSH_PYENV_VIRTUALENV=false
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  # eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
+  export ZSH_PYENV_VIRTUALENV=false
 fi
 
 # uv
 if which uv &> /dev/null; then
-   export PATH="$HOME/.local/bin:$PATH"
+  export PATH="$HOME/.local/bin:$PATH"
 fi
 
 # Node
 if [[ -d "/opt/homebrew/opt/nvm" ]]; then
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+fi
+
+# Bun
+if [[ -d "$HOME/.bun/bin" ]]; then
+  export PATH="$HOME/.bun/bin:$PATH"  
 fi
 
 # Ruby
 if which rbenv &> /dev/null; then
-    eval "$(rbenv init -)"
+  eval "$(rbenv init -)"
 fi
 
 # Rust
 if [[ -f "$HOME/.cargo/env" ]]; then
-    source "$HOME/.cargo/env"
+  source "$HOME/.cargo/env"
 fi
 
 # Java
 if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
-    export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+  export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 fi
 
 # Flutter
 if [[ -d "$HOME/Projects/flutter/flutter/bin" ]]; then
-    export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
-    export PATH="$HOME/.pub-cache/bin:$PATH"
+  export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
+  export PATH="$HOME/.pub-cache/bin:$PATH"
 fi
 if [[ -d "$HOME/.shorebird" ]]; then
-    export PATH="/Users/vduseev/.shorebird/bin:$PATH"
+  export PATH="/Users/vduseev/.shorebird/bin:$PATH"
 fi
 
 # PostgreSQL: psql without full database
 if [[ -d "/opt/homebrew/opt/libpq" ]]; then
-    export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+  export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 fi
 
 # --- Functions --------------------------------------------------------------
 
 listeners() {
-    if [[ $# -ne 1 ]]; then
-        echo "Error: port number is required for listeners command"
-        exit 1
-    fi
-    local __port="$1"
-    if which sw_vers &> /dev/null; then
-        # If MacOS X
-        lsof -nP -iTCP -sTCP:LISTEN | grep "$__port"
-    elif which netstat &> /dev/null; then
-        # Linux
-        netstat -plunt "$__port"
-    else
-        echo "Error: cannot find correct executable to find port listeners"
-    fi
+  if [[ $# -ne 1 ]]; then
+    echo "Error: port number is required for listeners command"
+    exit 1
+  fi
+  local __port="$1"
+  if which sw_vers &> /dev/null; then
+    # If MacOS X
+    lsof -nP -iTCP -sTCP:LISTEN | grep "$__port"
+  elif which netstat &> /dev/null; then
+    # Linux
+    netstat -plunt "$__port"
+  else
+    echo "Error: cannot find correct executable to find port listeners"
+  fi
 }
 
 # --- Aliases ----------------------------------------------------------------
@@ -173,5 +178,5 @@ alias fbr="flutter pub run build_runner build --delete-conflicting-outputs"
 # --- Load user supplied config ----------------------------------------------
 
 if [[ -f "$HOME/.zshrc.local" ]]; then
-    source "$HOME/.zshrc.local"
+  source "$HOME/.zshrc.local"
 fi
