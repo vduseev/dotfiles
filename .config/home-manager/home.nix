@@ -34,6 +34,7 @@
       # Coding
       vscode
       claude-code
+      amp-cli
     ];
 
     username = "vduseev";
