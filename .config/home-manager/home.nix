@@ -34,6 +34,8 @@
       # Coding
       vscode
       claude-code
+      codex
+      codegrab
     ];
 
     username = "vduseev";
