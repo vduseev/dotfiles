@@ -34,5 +34,9 @@ bind -n -r C-j next-window     # select next window
 unbind c
 bind c new-window -c ~
 
+# Propagate Shift+Enter instead of intercepting it.
+set -g extended-keys on
+bind-key -n S-Enter send-keys "\e[13;2u"
+
 # Restore pane contents
 set -g @resurrect-capture-pane-contents 'on'
