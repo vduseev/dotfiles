@@ -2,3 +2,25 @@
 name = Vagiz Duseev
 email = vagiz@duseev.com
 
+[alias]
+s = status
+a = add
+l = log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
+c = commit
+pf = pull --ff-only
+pr = pull --rebase
+p = push
+pt = push --tags
+pft = push --follow-tags
+f = fetch
+fa = fetch --all
+co = checkout
+cob = checkout -b
+cl = clone
+br = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+bd = branch -D
+rr = remote
+rb = rebase
+w = whatchanged
+undo = reset HEAD~1 --mixed
+reset = reset --hard
