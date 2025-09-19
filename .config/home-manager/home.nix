@@ -34,7 +34,6 @@
       # Coding
       vscode
       claude-code
-      codex
       codegrab
     ];
 
