@@ -17,6 +17,9 @@ if-shell '[ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]' {
     # Remote/nested session
     set -g prefix C-b
     bind C-b send-prefix
+    
+    # Let the outer tmux or terminal handle mouse selection for clipboard copy
+    set -g mouse off
 } {
     # Local session
     set -g prefix C-a
