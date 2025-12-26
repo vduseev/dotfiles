@@ -1,3 +1,6 @@
+[include]
+path = ~/.gitname
+
 [alias]
 s = status
 a = add
