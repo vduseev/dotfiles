@@ -41,5 +41,15 @@ bind c new-window -c ~
 set -g extended-keys on
 bind-key -n S-Enter send-keys "\e[13;2u"
 
+# Enable system bell on macos
+# enable bell monitoring (if not already)
+set -g monitor-bell on
+
+# Play macOS system sound on BEL character (async)
+set -g monitor-bell on
+if-shell 'uname | grep -q Darwin' \
+  "set-hook -g alert-bell 'run-shell -b \"afplay /System/Library/Sounds/Glass.aiff >/dev/null 2>&1\"'" \
+  "set-hook -gu alert-bell"
+
 # Restore pane contents
 set -g @resurrect-capture-pane-contents 'on'
