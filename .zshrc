@@ -36,10 +36,6 @@ export PATH="/opt/homebrew/bin:${PATH}"
 
 # --- Individual history for each terminal window ----------------------------
 
-# Use arrows to scroll local history
-bindkey "${key[Up]}" up-line-or-local-history
-bindkey "${key[Down]}" down-line-or-local-history
-
 up-line-or-local-history() {
   zle set-local-history 1
   zle up-line-or-history
@@ -174,3 +170,4 @@ alias fbr="flutter pub run build_runner build --delete-conflicting-outputs"
 if [[ -f "$HOME/.zshrc.local" ]]; then
   source "$HOME/.zshrc.local"
 fi
+
