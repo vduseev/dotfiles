@@ -21,6 +21,7 @@
 command_timeout = 5000
 
 [aws]
+disabled = true
 format = 'on [$symbol($profile )(\($region\) )]($style)'
 style = "bold yellow"
 symbol = " "
