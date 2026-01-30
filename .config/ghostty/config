@@ -4,3 +4,6 @@ macos-option-as-alt = true
 confirm-close-surface = false
 auto-update-channel = tip
 
+# Set larger font size for prompt line and tmux to fit perfectly into
+# 14-inch macbook screen.
+font-size = 14.5
