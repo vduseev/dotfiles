@@ -23,3 +23,5 @@ rb = rebase
 w = whatchanged
 undo = reset HEAD~1 --mixed
 reset = reset --hard
+[core]
+	autocrlf = input

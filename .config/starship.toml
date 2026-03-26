@@ -18,7 +18,7 @@
 # See Starship docs:
 # Styles: https://starship.rs/advanced-config/#style-strings
 
-command_timeout = 5000
+command_timeout = 500
 
 [aws]
 disabled = true

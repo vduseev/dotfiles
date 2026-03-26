@@ -68,15 +68,6 @@ fi
 
 # --- Languages & Technologies -----------------------------------------------
 
-# Pyenv
-if which pyenv &> /dev/null; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-  # eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
-  export ZSH_PYENV_VIRTUALENV=false
-fi
-
 # uv
 if which uv &> /dev/null; then
   export PATH="$HOME/.local/bin:$PATH"
