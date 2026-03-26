@@ -34,108 +34,135 @@ set -o emacs
 # Add Homebrew path on MacOS
 export PATH="/opt/homebrew/bin:${PATH}"
 
-# --- Individual history for each terminal window ----------------------------
+# --- Debug ------------------------------------------------------------------
 
-up-line-or-local-history() {
-  zle set-local-history 1
-  zle up-line-or-history
-  zle set-local-history 0
+__time_test() {
+  if [[ -n $DOTFILES_DEBUG ]]; then
+    >&2 printf "[$(date +'%T.%N')] $1\n"
+  fi
 }
-zle -N up-line-or-local-history
-down-line-or-local-history() {
-  zle set-local-history 1
-  zle down-line-or-history
-  zle set-local-history 0
-}
-zle -N down-line-or-local-history
 
-# --- Complimentary terminal tools -------------------------------------------
-
-# Starship
-if which starship &> /dev/null; then
-  eval "$(starship init zsh)"
-fi
-
-# Atuin
-if which atuin &> /dev/null; then
-  eval "$(atuin init zsh --disable-up-arrow)"
-fi
-
-# 1Password
-if [[ -f "$HOME/.config/op/plugins.sh" ]]; then
-  source "$HOME/.config/op/plugins.sh"
-fi
+__time_test "Start"
 
 # --- Languages & Technologies -----------------------------------------------
 
-# uv
+# Python
+
 if which uv &> /dev/null; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Node
-if [[ -d "/opt/homebrew/opt/nvm" ]]; then
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-fi
+__time_test "Done: Python"
 
-# Bun
+# JavaScript
+
 if [[ -d "$HOME/.bun/bin" ]]; then
   export PATH="$HOME/.bun/bin:$PATH"  
 fi
 
-# Ruby
-if which rbenv &> /dev/null; then
-  eval "$(rbenv init -)"
-fi
+__time_test "Done: JavaScript"
 
 # Rust
+
 if [[ -f "$HOME/.cargo/env" ]]; then
   source "$HOME/.cargo/env"
 fi
 
+__time_test "Done: Rust"
+
 # Java
+
 if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
   export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 fi
 
+__time_test "Done: Java"
+
 # Flutter
+
 if [[ -d "$HOME/Projects/flutter/flutter/bin" ]]; then
   export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
   export PATH="$HOME/.pub-cache/bin:$PATH"
 fi
+
 if [[ -d "$HOME/.shorebird" ]]; then
   export PATH="/Users/vduseev/.shorebird/bin:$PATH"
 fi
 
-# PostgreSQL: psql without full database
+if which flutter &> /dev/null; then
+  alias f="flutter"
+  alias fr="flutter run"
+  alias frd="flutter run --dart-define-from-file"
+  alias fbr="flutter pub run build_runner build --delete-conflicting-outputs"
+fi
+
+__time_test "Done: Flutter"
+
+# PostgreSQL
+
 if [[ -d "/opt/homebrew/opt/libpq" ]]; then
   export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 fi
 
-# --- Functions --------------------------------------------------------------
+__time_test "Done: PostgreSQL"
 
-listeners() {
-  if [[ $# -ne 1 ]]; then
-    echo "Error: port number is required for listeners command"
-    exit 1
-  fi
-  local __port="$1"
-  if which sw_vers &> /dev/null; then
-    # If MacOS X
-    lsof -nP -iTCP -sTCP:LISTEN | grep "$__port"
-  elif which netstat &> /dev/null; then
-    # Linux
-    netstat -plunt "$__port"
-  else
-    echo "Error: cannot find correct executable to find port listeners"
-  fi
-}
+# Docker
+
+if which docker &> /dev/null; then
+  alias d="docker"
+  alias dc="docker compose"
+fi
+
+__time_test "Done: Docker"
+
+# Podman
+
+if which podman &> /dev/null; then
+  alias p="podman"
+  alias pc="podman compose"
+fi
+
+__time_test "Done: Podman"
+
+# Kubernetes
+
+if which kubectl &> /dev/null; then
+  alias k="kubectl"
+fi
+
+__time_test "Done: Kubernetes"
+
+# --- Complimentary terminal tools -------------------------------------------
+
+# Starship
+
+if which starship &> /dev/null; then
+  eval "$(starship init zsh)"
+fi
+
+__time_test "Done: Starship"
+
+# Atuin
+
+if which atuin &> /dev/null; then
+  eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
+__time_test "Done: Atuin"
+
+# 1Password
+
+if [[ -f "$HOME/.config/op/plugins.sh" ]]; then
+  source "$HOME/.config/op/plugins.sh"
+fi
+
+__time_test "Done: 1Password"
 
 # --- Aliases ----------------------------------------------------------------
 
 # Directory navigation
-alias ll="ls -lha"
+alias l="ls -lha"
+alias ll="ls -lh"
 
 # Connections
 alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
@@ -143,22 +170,14 @@ alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 # Git
 alias g="git"
 
-# Containers
-alias d="docker"
-alias dc="docker compose"
-alias k="kubectl"
-alias p="podman"
-
-# Other
-alias dr="doppler run --"
-alias f="flutter"
-alias fr="flutter run"
-alias frd="flutter run --dart-define-from-file"
-alias fbr="flutter pub run build_runner build --delete-conflicting-outputs"
+__time_test "Done: Aliases"
 
 # --- Load user supplied config ----------------------------------------------
 
 if [[ -f "$HOME/.zshrc.local" ]]; then
   source "$HOME/.zshrc.local"
 fi
+
+__time_test "Done: Local zshrc config"
+__time_test "Done!"
 
