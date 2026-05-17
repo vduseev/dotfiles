@@ -17,7 +17,6 @@
 
 # --- General ----------------------------------------------------------------
 
-export PATH="/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 export EDITOR=vim
 
 # Language for compatibility with Mosh
@@ -32,7 +31,10 @@ bindkey -e
 set -o emacs
 
 # Add Homebrew path on MacOS
-export PATH="/opt/homebrew/bin:${PATH}"
+
+if ! [[ $PATH =~ "/opt/homebrew/bin" ]]; then
+  export PATH="/opt/homebrew/bin:${PATH}"
+fi
 
 # --- Debug ------------------------------------------------------------------
 
@@ -49,7 +51,9 @@ __time_test "Start"
 # Python
 
 if which uv &> /dev/null; then
-  export PATH="$HOME/.local/bin:$PATH"
+  if ! [[ $PATH =~ "$HOME/.local/bin" ]]; then
+    export PATH="$HOME/.local/bin:$PATH"
+  fi
 fi
 
 __time_test "Done: Python"
@@ -57,7 +61,9 @@ __time_test "Done: Python"
 # JavaScript
 
 if [[ -d "$HOME/.bun/bin" ]]; then
-  export PATH="$HOME/.bun/bin:$PATH"  
+  if ! [[ $PATH =~ "$HOME/.bun/bin" ]]; then
+    export PATH="$HOME/.bun/bin:$PATH"  
+  fi
 fi
 
 __time_test "Done: JavaScript"
@@ -73,7 +79,9 @@ __time_test "Done: Rust"
 # Java
 
 if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
-  export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+  if ! [[ $PATH =~ "openjdk" ]]; then
+    export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+  fi
 fi
 
 __time_test "Done: Java"
@@ -81,12 +89,16 @@ __time_test "Done: Java"
 # Flutter
 
 if [[ -d "$HOME/Projects/flutter/flutter/bin" ]]; then
-  export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
-  export PATH="$HOME/.pub-cache/bin:$PATH"
+  if ! [[ $PATH =~ "flutter" ]]; then
+    export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
+    export PATH="$HOME/.pub-cache/bin:$PATH"
+  fi
 fi
 
 if [[ -d "$HOME/.shorebird" ]]; then
-  export PATH="/Users/vduseev/.shorebird/bin:$PATH"
+  if ! [[ $PATH =~ "shorebird" ]]; then
+    export PATH="/Users/vduseev/.shorebird/bin:$PATH"
+  fi
 fi
 
 if which flutter &> /dev/null; then
@@ -101,7 +113,9 @@ __time_test "Done: Flutter"
 # PostgreSQL
 
 if [[ -d "/opt/homebrew/opt/libpq" ]]; then
-  export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+  if ! [[ $PATH =~ "libpq" ]]; then
+    export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+  fi
 fi
 
 __time_test "Done: PostgreSQL"
