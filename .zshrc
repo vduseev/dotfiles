@@ -84,6 +84,14 @@ if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
   fi
 fi
 
+# Go
+
+if [[ -d "$HOME/go/bin" ]]; then
+  if ! [[ $PATH =~ "go/bin" ]]; then
+    export PATH="$HOME/go/bin:$PATH"
+  fi
+fi
+
 __time_test "Done: Java"
 
 # Flutter
@@ -177,6 +185,7 @@ __time_test "Done: 1Password"
 # Directory navigation
 alias l="ls -lha"
 alias ll="ls -lh"
+alias tree="tree -a"
 
 # Connections
 alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
