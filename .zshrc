@@ -84,15 +84,17 @@ if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
   fi
 fi
 
+__time_test "Done: Java"
+
 # Go
 
 if [[ -d "$HOME/go/bin" ]]; then
-  if ! [[ $PATH =~ "go/bin" ]]; then
+  if ! [[ $PATH =~ "/go/bin" ]]; then
     export PATH="$HOME/go/bin:$PATH"
   fi
 fi
 
-__time_test "Done: Java"
+__time_test "Done: Golang"
 
 # Flutter
 
@@ -153,6 +155,14 @@ if which kubectl &> /dev/null; then
 fi
 
 __time_test "Done: Kubernetes"
+
+# Direnv
+
+if which direnv &> /dev/null; then
+  eval "$(direnv hook zsh)"
+fi
+
+__time_test "Done: Direnv"
 
 # --- Complimentary terminal tools -------------------------------------------
 
