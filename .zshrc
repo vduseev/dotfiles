@@ -30,6 +30,11 @@ export LANGUAGE=en_US.UTF-8
 bindkey -e
 set -o emacs
 
+# Completions
+autoload -Uz compinit
+compinit -d "$HOME/.zcompdump"
+zstyle ':completion:*' menu select
+
 # Add Homebrew path on MacOS
 
 if ! [[ $PATH =~ "/opt/homebrew/bin" ]]; then
@@ -202,6 +207,7 @@ alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 # Git
 alias g="git"
+compdef g=git
 
 __time_test "Done: Aliases"
 
@@ -213,4 +219,3 @@ fi
 
 __time_test "Done: Local zshrc config"
 __time_test "Done!"
-

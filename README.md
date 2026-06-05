@@ -77,8 +77,6 @@ you need to have that glyph in your font. Nerd Fonts is one of the best collecti
 of such fonts.
 
 ```shell
-# Add repository with fonts to Homebrew
-brew tap homebrew/cask-fonts
 
 # Install individual fonts (replace <FONT NAME> with actual name of the font)
 brew install --cask font-<FONT NAME>-nerd-font
@@ -170,7 +168,7 @@ Alternatives:
 - Standard macOS terminal
 
 ```shell
-brew install --case ghostty
+brew install --cask ghostty
 ```
 
 <a id="keyboard-mapping"></a>
