@@ -15,6 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# --- Debug ------------------------------------------------------------------
+
+__time_test() {
+  if [[ -n $DOTFILES_DEBUG ]]; then
+    >&2 printf "[$(date +'%T.%N')] $1\n"
+  fi
+}
+
+__time_test "Start"
+
 # --- General ----------------------------------------------------------------
 
 export EDITOR=vim
@@ -30,40 +40,32 @@ export LANGUAGE=en_US.UTF-8
 bindkey -e
 set -o emacs
 
-# Add Homebrew path on MacOS
+# --- Paths ------------------------------------------------------------------
 
-if ! [[ $PATH =~ "/opt/homebrew/bin" ]]; then
-  export PATH="/opt/homebrew/bin:${PATH}"
+# Replicate behavior of path_helper (populate from /etc/paths, /etc/paths.d)
+__path=()
+__path+=("${(@f)$(</etc/paths)}")
+for f in /etc/paths.d/*(.N); do
+  __path+=("${(@f)$(<$f)}")
+done
+export PATH="${(j/:/)__path}"
+
+# Homebrew
+if [[ -d "/opt/homebrew/bin" ]]; then
+  export PATH="/opt/homebrew/bin:$PATH"
 fi
 
-# --- Debug ------------------------------------------------------------------
-
-__time_test() {
-  if [[ -n $DOTFILES_DEBUG ]]; then
-    >&2 printf "[$(date +'%T.%N')] $1\n"
-  fi
-}
-
-__time_test "Start"
+# uv-installed tools and other user-local binaries
+if [[ -d "$HOME/.local/bin" ]] then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
 
 # --- Languages & Technologies -----------------------------------------------
-
-# Python
-
-if which uv &> /dev/null; then
-  if ! [[ $PATH =~ "$HOME/.local/bin" ]]; then
-    export PATH="$HOME/.local/bin:$PATH"
-  fi
-fi
-
-__time_test "Done: Python"
 
 # JavaScript
 
 if [[ -d "$HOME/.bun/bin" ]]; then
-  if ! [[ $PATH =~ "$HOME/.bun/bin" ]]; then
-    export PATH="$HOME/.bun/bin:$PATH"  
-  fi
+  export PATH="$HOME/.bun/bin:$PATH"  
 fi
 
 __time_test "Done: JavaScript"
@@ -79,9 +81,7 @@ __time_test "Done: Rust"
 # Java
 
 if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
-  if ! [[ $PATH =~ "openjdk" ]]; then
-    export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-  fi
+  export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 fi
 
 __time_test "Done: Java"
@@ -89,9 +89,7 @@ __time_test "Done: Java"
 # Go
 
 if [[ -d "$HOME/go/bin" ]]; then
-  if ! [[ $PATH =~ "/go/bin" ]]; then
-    export PATH="$HOME/go/bin:$PATH"
-  fi
+  export PATH="$HOME/go/bin:$PATH"
 fi
 
 __time_test "Done: Golang"
@@ -99,16 +97,12 @@ __time_test "Done: Golang"
 # Flutter
 
 if [[ -d "$HOME/Projects/flutter/flutter/bin" ]]; then
-  if ! [[ $PATH =~ "flutter" ]]; then
-    export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
-    export PATH="$HOME/.pub-cache/bin:$PATH"
-  fi
+  export PATH="$HOME/Projects/flutter/flutter/bin:$PATH"
+  export PATH="$HOME/.pub-cache/bin:$PATH"
 fi
 
 if [[ -d "$HOME/.shorebird" ]]; then
-  if ! [[ $PATH =~ "shorebird" ]]; then
-    export PATH="/Users/vduseev/.shorebird/bin:$PATH"
-  fi
+  export PATH="/Users/vduseev/.shorebird/bin:$PATH"
 fi
 
 if which flutter &> /dev/null; then
@@ -123,51 +117,21 @@ __time_test "Done: Flutter"
 # PostgreSQL
 
 if [[ -d "/opt/homebrew/opt/libpq" ]]; then
-  if ! [[ $PATH =~ "libpq" ]]; then
-    export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-  fi
+  export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 fi
 
 __time_test "Done: PostgreSQL"
 
-# Docker
-
-if which docker &> /dev/null; then
-  alias d="docker"
-  alias dc="docker compose"
-fi
-
-__time_test "Done: Docker"
-
-# Podman
-
-if which podman &> /dev/null; then
-  alias p="podman"
-  alias pc="podman compose"
-fi
-
-__time_test "Done: Podman"
-
-# Kubernetes
-
-if which kubectl &> /dev/null; then
-  alias k="kubectl"
-fi
-
-__time_test "Done: Kubernetes"
+# --- Shell tools ------------------------------------------------------------
 
 # Direnv
-
 if which direnv &> /dev/null; then
   eval "$(direnv hook zsh)"
 fi
 
 __time_test "Done: Direnv"
 
-# --- Complimentary terminal tools -------------------------------------------
-
 # Starship
-
 if which starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
@@ -175,20 +139,18 @@ fi
 __time_test "Done: Starship"
 
 # Atuin
-
 if which atuin &> /dev/null; then
   eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
 __time_test "Done: Atuin"
 
-# 1Password
-
-if [[ -f "$HOME/.config/op/plugins.sh" ]]; then
-  source "$HOME/.config/op/plugins.sh"
+# Nix
+if [[ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]]; then
+  source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
 
-__time_test "Done: 1Password"
+__time_test "Done: nix"
 
 # --- Aliases ----------------------------------------------------------------
 
@@ -203,6 +165,13 @@ alias ussh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 # Git
 alias g="git"
 
+# Containers
+alias p="podman"
+alias pc="podman compose"
+alias k="kubectl"
+alias d="docker"
+alias dc="docker compose"
+
 __time_test "Done: Aliases"
 
 # --- Load user supplied config ----------------------------------------------
@@ -212,5 +181,3 @@ if [[ -f "$HOME/.zshrc.local" ]]; then
 fi
 
 __time_test "Done: Local zshrc config"
-__time_test "Done!"
-
