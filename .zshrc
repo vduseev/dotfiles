@@ -146,7 +146,10 @@ fi
 __time_test "Done: Atuin"
 
 # Nix
-if [[ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]]; then
+if [[ -d "/nix/var/nix/profiles/default/bin" ]]; then
+  export PATH="/nix/var/nix/profiles/default/bin:$PATH"
+fi
+if [[ -f "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]]; then
   source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
 
