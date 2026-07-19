@@ -65,11 +65,12 @@ setenv -g tmux_conf_theme_status_left ' #S | #{?uptime_d,#{uptime_d}d#{uptime_h}
 # Right: no battery bar, no "|" sub-separators, time+date share one tile.
 # In these strings "|" starts a new tile (cycling the fg/bg/attr lists below)
 # and a top-level "," draws a sub-separator inside a tile — so there are none.
-# The green on the percentage is what the bar's gradient used to bleed into it
-# (it ended on colour82 and never reset); #[inherit] returns to the tile style.
+# The percentage is green because the bar's gradient used to bleed into it (it
+# ended on colour82 and never reset), dimmed here to sit alongside the clock.
+# #[inherit] returns to the surrounding tile style.
 # The clock tile is a dim amber LED read-out on near-black, with the date
 # a shade darker than the time.
-setenv -g tmux_conf_theme_status_right ' #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status, #{battery_status},}#{?battery_percentage,#[fg=colour82] #{battery_percentage} #[inherit],}  | %R #[fg=#af8700]%d %b#[inherit] | #{username}#{root} | #{hostname} '
+setenv -g tmux_conf_theme_status_right ' #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status, #{battery_status},}#{?battery_percentage,#[fg=#5faf00] #{battery_percentage} #[inherit],}  | %R #[fg=#af8700]%d %b#[inherit] | #{username}#{root} | #{hostname} '
 
 # Four tiles now (battery / clock / user / host), so extend the style lists.
 setenv -g tmux_conf_theme_status_right_fg '#8a8a8a,#d78700,#e4e4e4,#080808'
