@@ -33,9 +33,10 @@ unbind C-l
 bind -n -r C-k previous-window # select previous window
 bind -n -r C-j next-window     # select next window
 
-# Open new windows in ~ home directory
+# Open new windows in the directory the session was started in
+# (falls back to the current pane's directory if the session has no path)
 unbind c
-bind c new-window -c ~
+bind c new-window -c "#{session_path}" #!important
 
 # Propagate Shift+Enter instead of intercepting it.
 set -g extended-keys on
