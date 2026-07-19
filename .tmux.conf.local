@@ -62,5 +62,14 @@ set -g @resurrect-capture-pane-contents 'on'
 # Note: don't add #{uptime_y} here — upstream then rewrites uptime_d to days-mod-365.
 setenv -g tmux_conf_theme_status_left ' #S | #{?uptime_d,#{uptime_d}d#{uptime_h}h,#{uptime_h}h#{uptime_m}m} '
 
-# Right: same as upstream default, minus the battery bar
-setenv -g tmux_conf_theme_status_right ' #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status, #{battery_status},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} '
+# Right: no battery bar, no "|" sub-separators, time+date share one tile.
+# In these strings "|" starts a new tile (cycling the fg/bg/attr lists below)
+# and a top-level "," draws a sub-separator inside a tile — so there are none.
+# The green on the percentage is what the bar's gradient used to bleed into it
+# (it ended on colour82 and never reset); #[inherit] returns to the tile style.
+setenv -g tmux_conf_theme_status_right ' #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status, #{battery_status},}#{?battery_percentage,#[fg=colour82] #{battery_percentage}#[inherit],} | %R %d %b | #{username}#{root} | #{hostname} '
+
+# Four tiles now (battery / clock / user / host), so extend the style lists.
+setenv -g tmux_conf_theme_status_right_fg '#8a8a8a,#080808,#e4e4e4,#080808'
+setenv -g tmux_conf_theme_status_right_bg '#080808,#00afff,#d70000,#e4e4e4'
+setenv -g tmux_conf_theme_status_right_attr 'none,none,none,bold'
